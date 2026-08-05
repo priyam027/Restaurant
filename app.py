@@ -13,11 +13,11 @@ app.secret_key = os.environ.get('SECRET_KEY', 'change-this-secret-key-later')  #
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
-# Pre-compiled Regular Expressions (Sonar S5843 / S4248 optimization)
-RE_EMAIL = re.compile(r'^[^\s@]+@[^\s@]+\.[^\s@]+$')
+# Pre-compiled Regular Expressions (Sonar S5843 / S4248 / S5852 / S5868 optimizations)
+RE_EMAIL = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
 RE_PHONE = re.compile(r'^[0-9]{10}$')
 RE_SPACES = re.compile(r'\s+')
-RE_SINGLE_SPACE_BOUNDS = re.compile(r'^\s|\s$')
+RE_SINGLE_SPACE_BOUNDS = re.compile(r'(?:^\s|\s$)')
 RE_MULTI_SPACES = re.compile(r'\s{2,}')
 RE_INTEGER_PRICE = re.compile(r'^\d+$')
 RE_UPPER = re.compile(r'[A-Z]')

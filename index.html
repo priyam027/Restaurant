@@ -120,39 +120,39 @@
       <form class="row g-3 booking-form" id="bookingForm">
         <div class="col-md-6">
           <label class="form-label" for="bName">Name</label>
-          <input type="text" class="form-control" id="bName" name="Name"
+          <input type="text" class="form-control" id="bName" name="Name" aria-label="Name"
                  pattern="[A-Za-z\s]{2,}" title="Letters and spaces only, minimum 2 characters" required>
         </div>
 
         <div class="col-md-6">
           <label class="form-label" for="bEmail">Email</label>
-          <input type="email" class="form-control" id="bEmail" name="Email" required>
+          <input type="email" class="form-control" id="bEmail" name="Email" aria-label="Email" required>
         </div>
 
         <div class="col-md-6">
           <label class="form-label" for="bMobile">Mobile Number</label>
-          <input type="tel" class="form-control" id="bMobile" name="Mobile" placeholder="10-digit number"
+          <input type="tel" class="form-control" id="bMobile" name="Mobile" placeholder="10-digit number" aria-label="Mobile Number"
                  pattern="[0-9]{10}" title="Enter exactly 10 digits" required>
         </div>
 
         <div class="col-md-6">
           <label class="form-label" for="bGuests">Number of Guests</label>
-          <input type="number" class="form-control" id="bGuests" name="Guests" min="1" max="20" required>
+          <input type="number" class="form-control" id="bGuests" name="Guests" min="1" max="20" aria-label="Number of Guests" required>
         </div>
 
         <div class="col-md-6">
           <label class="form-label" for="bDate">Date</label>
-          <input type="date" class="form-control" id="bDate" name="Date" required>
+          <input type="date" class="form-control" id="bDate" name="Date" aria-label="Date" required>
         </div>
 
         <div class="col-md-6">
           <label class="form-label" for="bTime">Time</label>
-          <input type="time" class="form-control" id="bTime" name="Time" required>
+          <input type="time" class="form-control" id="bTime" name="Time" aria-label="Time" required>
         </div>
 
         <div class="col-12">
           <label class="form-label" for="bMessage">Message (optional)</label>
-          <textarea class="form-control" id="bMessage" name="Message" rows="3"></textarea>
+          <textarea class="form-control" id="bMessage" name="Message" rows="3" aria-label="Message"></textarea>
         </div>
 
         <div class="col-12">
@@ -213,16 +213,20 @@
         <div class="col-lg-7">
           <form class="row g-3" id="contactForm">
             <div class="col-md-6">
-              <input type="text" class="form-control" id="cName" placeholder="Your Name" required minlength="2">
+              <label for="cName" class="form-label visually-hidden">Your Name</label>
+              <input type="text" class="form-control" id="cName" placeholder="Your Name" aria-label="Your Name" required minlength="2">
             </div>
             <div class="col-md-6">
-              <input type="email" class="form-control" id="cEmail" placeholder="Your Email" required>
+              <label for="cEmail" class="form-label visually-hidden">Your Email</label>
+              <input type="email" class="form-control" id="cEmail" placeholder="Your Email" aria-label="Your Email" required>
             </div>
             <div class="col-12">
-              <input type="text" class="form-control" id="cSubject" placeholder="Subject" required>
+              <label for="cSubject" class="form-label visually-hidden">Subject</label>
+              <input type="text" class="form-control" id="cSubject" placeholder="Subject" aria-label="Subject" required>
             </div>
             <div class="col-12">
-              <textarea class="form-control" id="cMessage" rows="4" placeholder="Your Message" required minlength="5"></textarea>
+              <label for="cMessage" class="form-label visually-hidden">Your Message</label>
+              <textarea class="form-control" id="cMessage" rows="4" placeholder="Your Message" aria-label="Your Message" required minlength="5"></textarea>
             </div>
             <div class="col-12">
               <p id="contactError" style="color:#ff4d4d; display:none; margin-bottom:10px;"></p>
@@ -383,7 +387,7 @@
           errorEl.style.display = 'block';
           return;
         }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
           errorEl.textContent = 'Please enter a valid email address.';
           errorEl.style.display = 'block';
           return;
