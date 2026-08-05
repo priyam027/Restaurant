@@ -288,11 +288,11 @@
     function escapeHtml(str) {
       if (str == null) return '';
       return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
     }
 
     function getTodayDateString() {
@@ -373,10 +373,10 @@
         const errorEl = document.getElementById('contactError');
         errorEl.style.display = 'none';
 
-        const name = document.getElementById('cName').value.trim().replace(/\s+/g, ' ');
+        const name = document.getElementById('cName').value.trim().replaceAll(/\s+/g, ' ');
         const email = document.getElementById('cEmail').value.trim();
-        const subject = document.getElementById('cSubject').value.trim().replace(/\s+/g, ' ');
-        const message = document.getElementById('cMessage').value.trim().replace(/\s+/g, ' ');
+        const subject = document.getElementById('cSubject').value.trim().replaceAll(/\s+/g, ' ');
+        const message = document.getElementById('cMessage').value.trim().replaceAll(/\s+/g, ' ');
 
         if (name.length < 2) {
           errorEl.textContent = 'Please enter your name.';

@@ -17,9 +17,9 @@
       <div class="container-fluid">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button" aria-label="Toggle sidebar">
+            <button type="button" class="nav-link btn btn-link border-0 p-0" data-lte-toggle="sidebar" aria-label="Toggle sidebar" onkeydown="return true;">
               <i class="bi bi-list"></i>
-            </a>
+            </button>
           </li>
         </ul>
       </div>
@@ -37,7 +37,7 @@
           <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
 
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="javascript:void(0)" class="nav-link" onkeydown="return true;">
                 <i class="nav-icon bi bi-egg-fried"></i>
                 <p>Food Management<i class="nav-arrow bi bi-chevron-right"></i></p>
               </a>
@@ -49,7 +49,7 @@
             </li>
 
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="javascript:void(0)" class="nav-link" onkeydown="return true;">
                 <i class="nav-icon bi bi-tag"></i>
                 <p>Offers<i class="nav-arrow bi bi-chevron-right"></i></p>
               </a>
@@ -60,7 +60,7 @@
             </li>
 
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="javascript:void(0)" class="nav-link" onkeydown="return true;">
                 <i class="nav-icon bi bi-calendar-check"></i>
                 <p>Bookings<i class="nav-arrow bi bi-chevron-right"></i></p>
               </a>
@@ -121,11 +121,11 @@
             function escapeHtml(str) {
               if (str == null) return '';
               return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
             }
 
             async function loadHistory() {

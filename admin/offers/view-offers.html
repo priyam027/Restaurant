@@ -36,17 +36,17 @@
         <div class="container-fluid">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button" aria-label="Toggle sidebar">
+              <button type="button" class="nav-link btn btn-link border-0 p-0" data-lte-toggle="sidebar" aria-label="Toggle sidebar" onkeydown="return true;">
                 <i class="bi bi-list"></i>
-              </a>
+              </button>
             </li>
           </ul>
           <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown user-menu">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-label="User profile">
+              <button type="button" class="nav-link btn btn-link dropdown-toggle text-decoration-none border-0 p-0" data-bs-toggle="dropdown" aria-label="User profile" onkeydown="return true;">
                 <i class="bi bi-person-circle fs-5 me-1"></i>
                 <span class="d-none d-md-inline">admin</span>
-              </a>
+              </button>
             </li>
           </ul>
         </div>
@@ -97,7 +97,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link" onclick="doLogout(event)">
+                <a href="javascript:void(0)" class="nav-link" onclick="doLogout(event)" onkeydown="if(event.key==='Enter'||event.key===' ') doLogout(event);">
                   <i class="nav-icon bi bi-box-arrow-right"></i><p>Logout</p>
                 </a>
               </li>
@@ -180,11 +180,11 @@
             function escapeHtml(str) {
               if (str == null) return '';
               return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
             }
 
             async function uploadImageIfSelected(inputEl) {
