@@ -44,12 +44,12 @@ body {
 }
 
 .brand-name span {
-  color: #d95700;
+  color: #ff8c3b;
 }
 
 .subtitle {
   font-size: 14px;
-  color: #aaaaaa;
+  color: #bbbbbb;
   margin-bottom: 28px;
 }
 
@@ -80,11 +80,11 @@ body {
 }
 
 .form-group input:focus {
-  border-color: #d95700;
+  border-color: #ff8c3b;
 }
 
 .form-group input::placeholder {
-  color: #777777;
+  color: #8c8c8c;
 }
 
 /* Extra row: Remember me & Forgot Password */
@@ -105,11 +105,11 @@ body {
 }
 
 .remember-me input {
-  accent-color: #d95700;
+  accent-color: #ff8c3b;
 }
 
 .forgot {
-  color: #d95700;
+  color: #ff8c3b;
   text-decoration: none;
 }
 
@@ -119,12 +119,12 @@ body {
 
 /* ============================
    Login button
-   Sufficient contrast (4.5+:1 ratio)
+   Sufficient contrast (5.3+:1 ratio)
 ============================ */
 .login-btn {
   width: 100%;
   padding: 13px;
-  background-color: #d95700;
+  background-color: #b84600;
   color: #ffffff;
   font-size: 15px;
   font-weight: 600;
@@ -135,7 +135,7 @@ body {
 }
 
 .login-btn:hover {
-  background-color: #b84a00;
+  background-color: #9c3b00;
 }
 
 /* ============================
@@ -143,6 +143,6 @@ body {
 ============================ */
 .footer-text {
   margin-top: 20px;
-  color: #8c8c8c;
+  color: #aaaaaa;
   font-size: 12px;
 }

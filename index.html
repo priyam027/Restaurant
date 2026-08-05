@@ -132,7 +132,7 @@
         <div class="col-md-6">
           <label class="form-label" for="bMobile">Mobile Number</label>
           <input type="tel" class="form-control" id="bMobile" name="Mobile" placeholder="10-digit number" aria-label="Mobile Number"
-                 pattern="[0-9]{10}" title="Enter exactly 10 digits" required>
+                 pattern="\d{10}" title="Enter exactly 10 digits" required>
         </div>
 
         <div class="col-md-6">
@@ -299,6 +299,14 @@
         .replaceAll("'", '&#39;');
     }
 
+    function formatImageUrl(imagePath) {
+      if (!imagePath) return DEFAULT_DISH_IMAGE;
+      if (imagePath.startsWith('http') || imagePath.startsWith('/')) {
+        return escapeHtml(imagePath);
+      }
+      return '/' + escapeHtml(imagePath);
+    }
+
     function getTodayDateString() {
       return new Date().toISOString().split('T')[0];
     }
@@ -330,7 +338,7 @@
           errorEl.style.display = 'block';
           return;
         }
-        if (!/^[0-9]{10}$/.test(phone)) {
+        if (!/^\d{10}$/.test(phone)) {
           errorEl.textContent = 'Mobile number must be exactly 10 digits.';
           errorEl.style.display = 'block';
           return;
@@ -433,7 +441,7 @@
           return;
         }
         container.innerHTML = items.map(c => {
-          const imgSrc = c.image ? (c.image.startsWith('http') || c.image.startsWith('/') ? escapeHtml(c.image) : '/' + escapeHtml(c.image)) : DEFAULT_DISH_IMAGE;
+          const imgSrc = formatImageUrl(c.image);
           const priceText = c.price ? `$${Number(c.price).toFixed(2)}` : '';
           return `
             <div class="col-md-6 col-lg-4">
@@ -467,7 +475,7 @@
           return;
         }
         container.innerHTML = items.map(o => {
-          const imgSrc = o.image ? (o.image.startsWith('http') || o.image.startsWith('/') ? escapeHtml(o.image) : '/' + escapeHtml(o.image)) : DEFAULT_DISH_IMAGE;
+          const imgSrc = formatImageUrl(o.image);
           const badgeHtml = o.badge ? `<span class="badge-discount">${escapeHtml(o.badge)}</span>` : '';
           return `
             <div class="col-md-4">
@@ -512,7 +520,7 @@
           return;
         }
         container.innerHTML = items.map(r => {
-          const imgSrc = r.image ? (r.image.startsWith('http') || r.image.startsWith('/') ? escapeHtml(r.image) : '/' + escapeHtml(r.image)) : DEFAULT_DISH_IMAGE;
+          const imgSrc = formatImageUrl(r.image);
           const roleText = r.role ? `<span>${escapeHtml(r.role)}</span>` : '<span>Customer</span>';
           return `
             <div class="col-md-4">

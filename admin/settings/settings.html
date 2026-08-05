@@ -158,7 +158,7 @@
               chkLength: v => v.length > 8,
               chkUpper: v => /[A-Z]/.test(v),
               chkLower: v => /[a-z]/.test(v),
-              chkNumber: v => /[0-9]/.test(v),
+              chkNumber: v => /\d/.test(v),
               chkUnderscore: v => v.includes('_'),
             };
 

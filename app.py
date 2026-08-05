@@ -13,9 +13,9 @@ app.secret_key = os.environ.get('SECRET_KEY', 'change-this-secret-key-later')  #
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
-# Pre-compiled Regular Expressions (Sonar S5843 / S4248 / S5852 / S5868 optimizations)
+# Pre-compiled Regular Expressions (Sonar S5843 / S4248 / S5852 / S5868 / character class optimizations)
 RE_EMAIL = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-RE_PHONE = re.compile(r'^[0-9]{10}$')
+RE_PHONE = re.compile(r'^\d{10}$')
 RE_SPACES = re.compile(r'\s+')
 RE_LEADING_SPACE = re.compile(r'^\s')
 RE_TRAILING_SPACE = re.compile(r'\s$')
@@ -23,7 +23,7 @@ RE_MULTI_SPACES = re.compile(r'\s{2,}')
 RE_INTEGER_PRICE = re.compile(r'^\d+$')
 RE_UPPER = re.compile(r'[A-Z]')
 RE_LOWER = re.compile(r'[a-z]')
-RE_DIGIT = re.compile(r'[0-9]')
+RE_DIGIT = re.compile(r'\d')
 
 # Named Constants for Repeated Strings & Responses (Sonar S1192 optimization)
 STATUS_OK = 'ok'
@@ -32,6 +32,7 @@ STATUS_UPDATED = 'updated'
 STATUS_PENDING = 'pending'
 STATUS_APPROVED = 'approved'
 STATUS_REJECTED = 'rejected'
+PATH_ADMIN_LOGIN_HTML = '/admin/login.html'
 
 MSG_SINGLE_SPACED_NAME = 'Name cannot be empty, must not have leading/trailing spaces, and allows only 1 single space between words.'
 MSG_SINGLE_SPACED_TITLE = 'Title cannot be empty, must not have leading/trailing spaces, and allows only 1 single space between words.'
@@ -42,7 +43,7 @@ MSG_DESC_MAX_WORDS = 'Description must be 60 words or fewer.'
 MSG_REVIEW_MAX_WORDS = 'Review must be 60 words or fewer.'
 
 PUBLIC_ASSET_EXTENSIONS = ('.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.svg', '.woff', '.woff2', '.ttf')
-PUBLIC_PATHS = {'/admin/login.html', '/admin/login'}
+PUBLIC_PATHS = {PATH_ADMIN_LOGIN_HTML, '/admin/login'}
 AUTH_APIS = {'/api/login', '/api/logout', '/api/check-auth'}
 
 
@@ -88,15 +89,15 @@ def is_valid_integer_price(value):
 #  Static pages + login protection
 # ============================================================
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def home():
     return send_from_directory('.', 'index.html')
 
-@app.route('/admin')
-@app.route('/admin/')
+@app.route('/admin', methods=['GET'])
+@app.route('/admin/', methods=['GET'])
 def admin_root():
     if not session.get('logged_in'):
-        return redirect('/admin/login.html')
+        return redirect(PATH_ADMIN_LOGIN_HTML)
     return redirect('/admin/dashboard.html')
 
 @app.before_request
@@ -119,7 +120,7 @@ def require_login_for_admin_pages():
 
     # Guard all /admin HTML pages and sub-routes
     if path.startswith('/admin') and not session.get('logged_in'):
-        return redirect('/admin/login.html')
+        return redirect(PATH_ADMIN_LOGIN_HTML)
 
     # Guard admin API routes
     if path.startswith('/api/'):
