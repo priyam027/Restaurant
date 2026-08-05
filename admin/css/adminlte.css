@@ -553,14 +553,6 @@ legend + * {
   filter: grayscale(1);
 }
 
-/* rtl:raw:
-[type="tel"],
-[type="url"],
-[type="email"],
-[type="number"] {
-  direction: ltr;
-}
-*/
 ::-webkit-search-decoration {
   -webkit-appearance: none;
 }
@@ -3538,7 +3530,7 @@ textarea.form-control-lg {
 .dropend .dropdown-toggle::after {
   display: inline-block;
   margin-left: 0.255em;
-  vertical-align: 0.255em;
+  vertical-align: 0;
   content: "";
   border-top: 0.3em solid transparent;
   border-right: 0;
@@ -3547,9 +3539,6 @@ textarea.form-control-lg {
 }
 .dropend .dropdown-toggle:empty::after {
   margin-left: 0;
-}
-.dropend .dropdown-toggle::after {
-  vertical-align: 0;
 }
 
 .dropstart .dropdown-menu[data-bs-popper] {
@@ -3560,18 +3549,15 @@ textarea.form-control-lg {
   margin-right: var(--bs-dropdown-spacer);
 }
 .dropstart .dropdown-toggle::after {
-  display: inline-block;
+  display: none;
   margin-left: 0.255em;
   vertical-align: 0.255em;
   content: "";
 }
-.dropstart .dropdown-toggle::after {
-  display: none;
-}
 .dropstart .dropdown-toggle::before {
   display: inline-block;
   margin-right: 0.255em;
-  vertical-align: 0.255em;
+  vertical-align: 0;
   content: "";
   border-top: 0.3em solid transparent;
   border-right: 0.3em solid;
@@ -3579,9 +3565,6 @@ textarea.form-control-lg {
 }
 .dropstart .dropdown-toggle:empty::after {
   margin-left: 0;
-}
-.dropstart .dropdown-toggle::before {
-  vertical-align: 0;
 }
 
 .dropdown-divider {
@@ -13025,6 +13008,7 @@ textarea.form-control-lg {
   padding-left: 0.5rem;
   overscroll-behavior: contain;
   scrollbar-color: var(--bs-secondary-bg) transparent;
+  scrollbar-width: thin;
 }
 .sidebar-wrapper::-webkit-scrollbar-thumb {
   background-color: var(--bs-secondary-bg);
@@ -13034,9 +13018,6 @@ textarea.form-control-lg {
 }
 .sidebar-wrapper::-webkit-scrollbar-corner {
   background-color: transparent;
-}
-.sidebar-wrapper {
-  scrollbar-width: thin;
 }
 .sidebar-wrapper::-webkit-scrollbar {
   width: 0.5rem;
@@ -13110,17 +13091,15 @@ textarea.form-control-lg {
 }
 .sidebar-menu .nav-item > .nav-link .nav-arrow {
   transition: transform ease-in-out 0.3s;
+  transform: translateY(-50%) /*rtl:append:rotate(180deg)*/;
+  animation-name: fadeIn;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
 }
 @media (prefers-reduced-motion: reduce) {
   .sidebar-menu .nav-item > .nav-link .nav-arrow {
     transition: none;
   }
-}
-.sidebar-menu .nav-item > .nav-link .nav-arrow {
-  transform: translateY(-50%) /*rtl:append:rotate(180deg)*/;
-  animation-name: fadeIn;
-  animation-duration: 0.3s;
-  animation-fill-mode: both;
 }
 .sidebar-menu .nav-link > .nav-badge,
 .sidebar-menu .nav-link > p > .nav-badge {
@@ -13139,14 +13118,12 @@ textarea.form-control-lg {
   position: relative;
   width: 100%;
   transition: width ease-in-out 0.3s;
+  border-radius: 0.375rem;
 }
 @media (prefers-reduced-motion: reduce) {
   .sidebar-menu .nav-link {
     transition: none;
   }
-}
-.sidebar-menu .nav-link {
-  border-radius: 0.375rem;
 }
 .sidebar-menu .nav-link p {
   display: inline;
