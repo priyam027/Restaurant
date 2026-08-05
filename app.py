@@ -17,7 +17,8 @@ ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 RE_EMAIL = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
 RE_PHONE = re.compile(r'^[0-9]{10}$')
 RE_SPACES = re.compile(r'\s+')
-RE_SINGLE_SPACE_BOUNDS = re.compile(r'(?:^\s|\s$)')
+RE_LEADING_SPACE = re.compile(r'^\s')
+RE_TRAILING_SPACE = re.compile(r'\s$')
 RE_MULTI_SPACES = re.compile(r'\s{2,}')
 RE_INTEGER_PRICE = re.compile(r'^\d+$')
 RE_UPPER = re.compile(r'[A-Z]')
@@ -67,7 +68,7 @@ def clean_text(value):
 def is_valid_single_spaced_text(value):
     if not value or not isinstance(value, str):
         return False
-    if RE_SINGLE_SPACE_BOUNDS.search(value) or RE_MULTI_SPACES.search(value) or len(value.strip()) < 2:
+    if RE_LEADING_SPACE.search(value) or RE_TRAILING_SPACE.search(value) or RE_MULTI_SPACES.search(value) or len(value.strip()) < 2:
         return False
     return True
 
@@ -366,7 +367,7 @@ def add_offer():
 
     if not is_valid_single_spaced_text(title_raw):
         return jsonify({'error': MSG_SINGLE_SPACED_TITLE}), 400
-    if badge_raw and (RE_SINGLE_SPACE_BOUNDS.search(badge_raw) or RE_MULTI_SPACES.search(badge_raw)):
+    if badge_raw and (RE_LEADING_SPACE.search(badge_raw) or RE_TRAILING_SPACE.search(badge_raw) or RE_MULTI_SPACES.search(badge_raw)):
         return jsonify({'error': MSG_SINGLE_SPACED_BADGE}), 400
     if description and len(description.split()) > 60:
         return jsonify({'error': MSG_DESC_MAX_WORDS}), 400
@@ -390,7 +391,7 @@ def update_offer(offer_id):
 
     if not is_valid_single_spaced_text(title_raw):
         return jsonify({'error': MSG_SINGLE_SPACED_TITLE}), 400
-    if badge_raw and (RE_SINGLE_SPACE_BOUNDS.search(badge_raw) or RE_MULTI_SPACES.search(badge_raw)):
+    if badge_raw and (RE_LEADING_SPACE.search(badge_raw) or RE_TRAILING_SPACE.search(badge_raw) or RE_MULTI_SPACES.search(badge_raw)):
         return jsonify({'error': MSG_SINGLE_SPACED_BADGE}), 400
 
     with get_db() as conn:
@@ -506,7 +507,7 @@ def add_review():
 
     if not is_valid_single_spaced_text(name_raw):
         return jsonify({'error': MSG_SINGLE_SPACED_NAME}), 400
-    if role_raw and (RE_SINGLE_SPACE_BOUNDS.search(role_raw) or RE_MULTI_SPACES.search(role_raw)):
+    if role_raw and (RE_LEADING_SPACE.search(role_raw) or RE_TRAILING_SPACE.search(role_raw) or RE_MULTI_SPACES.search(role_raw)):
         return jsonify({'error': MSG_SINGLE_SPACED_ROLE}), 400
     try:
         rating = int(rating)
@@ -537,7 +538,7 @@ def update_review(review_id):
 
     if not is_valid_single_spaced_text(name_raw):
         return jsonify({'error': MSG_SINGLE_SPACED_NAME}), 400
-    if role_raw and (RE_SINGLE_SPACE_BOUNDS.search(role_raw) or RE_MULTI_SPACES.search(role_raw)):
+    if role_raw and (RE_LEADING_SPACE.search(role_raw) or RE_TRAILING_SPACE.search(role_raw) or RE_MULTI_SPACES.search(role_raw)):
         return jsonify({'error': MSG_SINGLE_SPACED_ROLE}), 400
     try:
         rating = int(rating)

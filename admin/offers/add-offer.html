@@ -13,7 +13,7 @@
   <div class="app-wrapper">
 
     <!-- Header -->
-    <nav class="app-header navbar navbar-expand bg-body">
+    <nav class="app-header navbar navbar-expand bg-body" aria-label="Header Navigation">
       <div class="container-fluid">
         <ul class="navbar-nav">
           <li class="nav-item">
@@ -128,7 +128,7 @@
             <button type="submit" class="btn btn-primary">Add Offer</button>
           </form>
 
-          <script>
+          <script type="module">
             document.getElementById('offerForm').addEventListener('submit', async (e) => {
               e.preventDefault();
               const titleRaw = document.getElementById('title').value;
@@ -151,10 +151,11 @@
                   alert('Offer added!');
                   document.getElementById('offerForm').reset();
                 } else {
-                  const err = await res.json().catch(() => ({}));
+                  const err = await res.json().catch(err => { console.error(err); return {}; });
                   alert(err.error || 'Failed to add offer.');
                 }
               } catch (err) {
+                console.error('Add offer error:', err);
                 alert('Connection error. Failed to add offer.');
               }
             });

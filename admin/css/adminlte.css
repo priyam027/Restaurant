@@ -8591,8 +8591,8 @@ textarea.form-control-lg {
 
 /* rtl:begin:remove */
 .text-break {
-  word-wrap: break-word !important;
-  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-all !important;
 }
 
 /* rtl:end:remove */
@@ -13341,9 +13341,6 @@ textarea.form-control-lg {
   margin-left: calc(var(--lte-sidebar-width) * -1);
 }
 
-.sidebar-expand {
-  /* stylelint-disable-next-line scss/selector-no-union-class-name */
-}
 @media (min-width: 576px) {
   .sidebar-expand-sm.layout-fixed .app-main-wrapper {
     display: flex;
@@ -13415,9 +13412,6 @@ textarea.form-control-lg {
     animation-name: fadeIn;
     animation-fill-mode: both;
   }
-}
-.sidebar-expand {
-  /* stylelint-disable-next-line scss/selector-no-union-class-name */
 }
 @media (min-width: 768px) {
   .sidebar-expand-md.layout-fixed .app-main-wrapper {
@@ -13491,9 +13485,6 @@ textarea.form-control-lg {
     animation-fill-mode: both;
   }
 }
-.sidebar-expand {
-  /* stylelint-disable-next-line scss/selector-no-union-class-name */
-}
 @media (min-width: 992px) {
   .sidebar-expand-lg.layout-fixed .app-main-wrapper {
     display: flex;
@@ -13565,9 +13556,6 @@ textarea.form-control-lg {
     animation-name: fadeIn;
     animation-fill-mode: both;
   }
-}
-.sidebar-expand {
-  /* stylelint-disable-next-line scss/selector-no-union-class-name */
 }
 @media (min-width: 1200px) {
   .sidebar-expand-xl.layout-fixed .app-main-wrapper {
@@ -13641,9 +13629,6 @@ textarea.form-control-lg {
     animation-fill-mode: both;
   }
 }
-.sidebar-expand {
-  /* stylelint-disable-next-line scss/selector-no-union-class-name */
-}
 @media (min-width: 1400px) {
   .sidebar-expand-xxl.layout-fixed .app-main-wrapper {
     display: flex;
@@ -13715,9 +13700,6 @@ textarea.form-control-lg {
     animation-name: fadeIn;
     animation-fill-mode: both;
   }
-}
-.sidebar-expand {
-  /* stylelint-disable-next-line scss/selector-no-union-class-name */
 }
 .sidebar-expand.layout-fixed .app-main-wrapper {
   display: flex;

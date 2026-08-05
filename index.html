@@ -22,7 +22,7 @@
 <body>
 
   <!-- ================= HEADER / NAVBAR ================= -->
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" aria-label="Main Navbar">
     <div class="container">
       <a class="navbar-brand" href="#home">Bella <span>Fiamma</span></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -286,7 +286,7 @@
   <!-- Bootstrap JS bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
-  <script>
+  <script type="module">
     const DEFAULT_DISH_IMAGE = './image/hero-dish.png.png';
 
     function escapeHtml(str) {
@@ -352,7 +352,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ customer_name: name, email, phone, date, time, guests, message })
           });
-          const result = await res.json().catch(() => ({}));
+          const result = await res.json().catch(err => { console.error(err); return {}; });
 
           if (res.ok) {
             alert('Table reserved! We will contact you shortly.');
@@ -363,6 +363,7 @@
             errorEl.style.display = 'block';
           }
         } catch (err) {
+          console.error('Booking submission error:', err);
           errorEl.textContent = 'Connection error, please try again.';
           errorEl.style.display = 'block';
         }
@@ -404,7 +405,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, subject, message })
           });
-          const result = await res.json().catch(() => ({}));
+          const result = await res.json().catch(err => { console.error(err); return {}; });
 
           if (res.ok) {
             alert('Message sent! We will get back to you soon.');
@@ -414,6 +415,7 @@
             errorEl.style.display = 'block';
           }
         } catch (err) {
+          console.error('Contact submission error:', err);
           errorEl.textContent = 'Connection error, please try again.';
           errorEl.style.display = 'block';
         }
@@ -536,10 +538,10 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      loadWebsiteCategories();
-      loadWebsiteOffers();
-      loadWebsiteReviews();
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadWebsiteCategories();
+      await loadWebsiteOffers();
+      await loadWebsiteReviews();
     });
   </script>
 

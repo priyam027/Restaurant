@@ -8294,8 +8294,8 @@ fieldset:disabled .btn {
   white-space: nowrap !important;
 }
 .text-break {
-  word-wrap: break-word !important;
-  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-all !important;
 }
 .text-primary {
   --bs-text-opacity: 1;

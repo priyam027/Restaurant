@@ -18,20 +18,19 @@
     .rating-star { color: #ffc107; }
     .card-header::after { display: none !important; }
   </style>
-  <script>
-    (async function() {
-      try {
-        const res = await fetch('/api/check-auth');
-        if (!res.ok) window.location.href = '../login.html';
-      } catch(e) {
-        window.location.href = '../login.html';
-      }
-    })();
+  <script type="module">
+    try {
+      const res = await fetch('/api/check-auth');
+      if (!res.ok) window.location.href = '../login.html';
+    } catch (err) {
+      console.error('Auth check failed:', err);
+      window.location.href = '../login.html';
+    }
   </script>
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
   <div class="app-wrapper">
-      <nav class="app-header navbar navbar-expand bg-body">
+      <nav class="app-header navbar navbar-expand bg-body" aria-label="Header Navigation">
         <div class="container-fluid">
           <ul class="navbar-nav">
             <li class="nav-item">
@@ -134,7 +133,7 @@
             </div>
           </div>
 
-          <script>
+          <script type="module">
             function escapeHtml(str) {
               if (str == null) return '';
               return String(str)
@@ -209,7 +208,7 @@
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ status })
                 });
-                loadBookings();
+                await loadBookings();
               } catch (err) {
                 console.error('Failed to update status:', err);
               }
@@ -219,13 +218,17 @@
               if (!confirm('Remove this booking record?')) return;
               try {
                 await fetch(`/api/bookings/${id}`, { method: 'DELETE' });
-                loadBookings();
+                await loadBookings();
               } catch (err) {
                 console.error('Failed to delete booking:', err);
               }
             }
 
-            loadBookings();
+            window.loadBookings = loadBookings;
+            window.setStatus = setStatus;
+            window.deleteBooking = deleteBooking;
+
+            await loadBookings();
           </script>
 
         </div>
