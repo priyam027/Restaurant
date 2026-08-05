@@ -18,11 +18,6 @@
 
   <!-- Custom CSS (loaded last so it can override Bootstrap) -->
   <link rel="stylesheet" href="styles.css">
-
-  
-    
-
-  
 </head>
 <body>
 
@@ -35,14 +30,13 @@
       </button>
       <div class="collapse navbar-collapse" id="navMenu">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link " href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
           <li class="nav-item"><a class="nav-link" href="#menu">Menu</a></li>
           <li class="nav-item"><a class="nav-link" href="#booktable">Book Table</a></li>
           <li class="nav-item"><a class="nav-link" href="#offers">Offers</a></li>
           <li class="nav-item"><a class="nav-link" href="#reviews">Reviews</a></li>
           <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-          
         </ul>
       </div>
     </div>
@@ -56,7 +50,7 @@
           <span class="pretitle">Welcome to Bella Fiamma</span>
           <h1>Taste The <span class="text-accent">Authentic</span> Italian Flavor</h1>
           <p>Fresh ingredients, wood-fired ovens, and recipes passed down for generations. Every plate tells a story.</p>
-          <div class="hero-btns ">
+          <div class="hero-btns">
             <a href="#menu" class="btn btn-accent btn-lg me-3">View Menu</a>
             <a href="#booktable" class="btn btn-outline-light btn-lg">Book a Table</a>
           </div>
@@ -123,14 +117,9 @@
         <h2 class="section-title">Book Your Table</h2>
       </div>
 
-      <!-- HTML5-only validation: "pattern" enforces format rules, "required" blocks
-           empty submits, "min"/"max" bound the guest count — all handled natively
-           by the browser. Swap the mailto address for your real one, or point
-           action= at a backend/form service (e.g. Formspree) later. -->
       <form class="row g-3 booking-form" id="bookingForm">
         <div class="col-md-6">
           <label class="form-label" for="bName">Name</label>
-
           <input type="text" class="form-control" id="bName" name="Name"
                  pattern="[A-Za-z\s]{2,}" title="Letters and spaces only, minimum 2 characters" required>
         </div>
@@ -172,63 +161,6 @@
         <div class="col-12 text-center">
           <button type="submit" class="btn btn-accent btn-lg px-5">Reserve Now</button>
         </div>
-        <script>
-        // No past dates allowed in the date picker
-        document.getElementById('bDate').min = new Date().toISOString().split('T')[0];
-
-        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const errorEl = document.getElementById('bookingError');
-          errorEl.style.display = 'none';
-
-          const name = document.getElementById('bName').value.trim();
-          const email = document.getElementById('bEmail').value.trim();
-          const phone = document.getElementById('bMobile').value.trim();
-          const date = document.getElementById('bDate').value;
-          const time = document.getElementById('bTime').value;
-          const guests = Number(document.getElementById('bGuests').value);
-          const message = document.getElementById('bMessage').value.trim();
-
-          // Client-side checks (fast feedback before we even contact the server)
-          if (name.length < 2 || !/^[A-Za-z\s]+$/.test(name)) {
-            errorEl.textContent = 'Please enter a valid name (letters and spaces only).';
-            errorEl.style.display = 'block';
-            return;
-          }
-          if (!/^[0-9]{10}$/.test(phone)) {
-            errorEl.textContent = 'Mobile number must be exactly 10 digits.';
-            errorEl.style.display = 'block';
-            return;
-          }
-          if (guests < 1 || guests > 20) {
-            errorEl.textContent = 'Number of guests must be between 1 and 20.';
-            errorEl.style.display = 'block';
-            return;
-          }
-          const today = new Date().toISOString().split('T')[0];
-          if (date < today) {
-            errorEl.textContent = 'Please choose today or a future date.';
-            errorEl.style.display = 'block';
-            return;
-          }
-
-          const res = await fetch('/api/bookings', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ customer_name: name, email, phone, date, time, guests, message })
-          });
-          const result = await res.json().catch(() => ({}));
-
-          if (res.ok) {
-            alert('Table reserved! We will contact you shortly.');
-            document.getElementById('bookingForm').reset();
-            document.getElementById('bDate').min = new Date().toISOString().split('T')[0];
-          } else {
-            errorEl.textContent = result.error || 'Something went wrong, please try again.';
-            errorEl.style.display = 'block';
-          }
-        });
-      </script>
       </form>
     </div>
   </section>
@@ -258,7 +190,6 @@
       <div class="row g-4" id="websiteReviewsContainer">
         <!-- Dynamic customer reviews will load here from database -->
       </div>
-
     </div>
   </section>
 
@@ -298,51 +229,6 @@
               <button type="submit" class="btn btn-accent btn-lg">Send Message</button>
             </div>
           </form>
-
-          <script>
-            document.getElementById('contactForm').addEventListener('submit', async (e) => {
-              e.preventDefault();
-              const errorEl = document.getElementById('contactError');
-              errorEl.style.display = 'none';
-
-              // trim() removes leading/trailing spaces, replace collapses double spaces typed in the middle
-              const name = document.getElementById('cName').value.trim().replace(/\s+/g, ' ');
-              const email = document.getElementById('cEmail').value.trim();
-              const subject = document.getElementById('cSubject').value.trim().replace(/\s+/g, ' ');
-              const message = document.getElementById('cMessage').value.trim().replace(/\s+/g, ' ');
-
-              if (name.length < 2) {
-                errorEl.textContent = 'Please enter your name.';
-                errorEl.style.display = 'block';
-                return;
-              }
-              if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                errorEl.textContent = 'Please enter a valid email address.';
-                errorEl.style.display = 'block';
-                return;
-              }
-              if (message.length < 5) {
-                errorEl.textContent = 'Message must be at least 5 characters.';
-                errorEl.style.display = 'block';
-                return;
-              }
-
-              const res = await fetch('/api/contact', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, subject, message })
-              });
-              const result = await res.json().catch(() => ({}));
-
-              if (res.ok) {
-                alert('Message sent! We will get back to you soon.');
-                document.getElementById('contactForm').reset();
-              } else {
-                errorEl.textContent = result.error || 'Something went wrong, please try again.';
-                errorEl.style.display = 'block';
-              }
-            });
-          </script>
         </div>
       </div>
     </div>
@@ -356,10 +242,10 @@
           <h3 class="footer-logo">Bella <span>Fiamma</span></h3>
           <p>Authentic Italian dining, crafted with fire and passion since 1998.</p>
           <div class="social-icons">
-            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href="https://www.instagram.com/veddesai_1?igsh=MXRoZzJpc240N3Vycw== `"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#"><i class="fa-brands fa-twitter"></i></a>
-            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#home" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/veddesai_1?igsh=MXRoZzJpc240N3Vycw==" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#home" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#home" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
           </div>
         </div>
 
@@ -370,7 +256,7 @@
             <li><a href="#about">About</a></li>
             <li><a href="#menu">Menu</a></li>
             <li><a href="#booktable">Book Table</a></li>
-            <li><a href="#reviews">reviews</a></li>
+            <li><a href="#reviews">Reviews</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
         </div>
@@ -391,16 +277,145 @@
   </footer>
 
   <!-- Back to Top Button -->
-  <!-- Pure CSS/HTML back-to-top: relies on "scroll-behavior: smooth" in styles.css
-       and simply links to the #home anchor. Always visible since there's no JS
-       to show/hide it based on scroll position. -->
   <a href="#home" id="backToTop" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></a>
 
-  <!-- Bootstrap JS bundle — required ONLY so the mobile hamburger menu can open/close.
-       This is Bootstrap's own library file, not custom JS. -->
+  <!-- Bootstrap JS bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
   <script>
+    const DEFAULT_DISH_IMAGE = './image/hero-dish.png.png';
+
+    function escapeHtml(str) {
+      if (str == null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getTodayDateString() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    // Set min date for booking date picker
+    const bDateEl = document.getElementById('bDate');
+    if (bDateEl) {
+      bDateEl.min = getTodayDateString();
+    }
+
+    // Booking form event handler
+    const bookingFormEl = document.getElementById('bookingForm');
+    if (bookingFormEl) {
+      bookingFormEl.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const errorEl = document.getElementById('bookingError');
+        errorEl.style.display = 'none';
+
+        const name = document.getElementById('bName').value.trim();
+        const email = document.getElementById('bEmail').value.trim();
+        const phone = document.getElementById('bMobile').value.trim();
+        const date = document.getElementById('bDate').value;
+        const time = document.getElementById('bTime').value;
+        const guests = Number(document.getElementById('bGuests').value);
+        const message = document.getElementById('bMessage').value.trim();
+
+        if (name.length < 2 || !/^[A-Za-z\s]+$/.test(name)) {
+          errorEl.textContent = 'Please enter a valid name (letters and spaces only).';
+          errorEl.style.display = 'block';
+          return;
+        }
+        if (!/^[0-9]{10}$/.test(phone)) {
+          errorEl.textContent = 'Mobile number must be exactly 10 digits.';
+          errorEl.style.display = 'block';
+          return;
+        }
+        if (guests < 1 || guests > 20) {
+          errorEl.textContent = 'Number of guests must be between 1 and 20.';
+          errorEl.style.display = 'block';
+          return;
+        }
+        if (date < getTodayDateString()) {
+          errorEl.textContent = 'Please choose today or a future date.';
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        try {
+          const res = await fetch('/api/bookings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ customer_name: name, email, phone, date, time, guests, message })
+          });
+          const result = await res.json().catch(() => ({}));
+
+          if (res.ok) {
+            alert('Table reserved! We will contact you shortly.');
+            bookingFormEl.reset();
+            if (bDateEl) bDateEl.min = getTodayDateString();
+          } else {
+            errorEl.textContent = result.error || 'Something went wrong, please try again.';
+            errorEl.style.display = 'block';
+          }
+        } catch (err) {
+          errorEl.textContent = 'Connection error, please try again.';
+          errorEl.style.display = 'block';
+        }
+      });
+    }
+
+    // Contact form event handler
+    const contactFormEl = document.getElementById('contactForm');
+    if (contactFormEl) {
+      contactFormEl.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const errorEl = document.getElementById('contactError');
+        errorEl.style.display = 'none';
+
+        const name = document.getElementById('cName').value.trim().replace(/\s+/g, ' ');
+        const email = document.getElementById('cEmail').value.trim();
+        const subject = document.getElementById('cSubject').value.trim().replace(/\s+/g, ' ');
+        const message = document.getElementById('cMessage').value.trim().replace(/\s+/g, ' ');
+
+        if (name.length < 2) {
+          errorEl.textContent = 'Please enter your name.';
+          errorEl.style.display = 'block';
+          return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          errorEl.textContent = 'Please enter a valid email address.';
+          errorEl.style.display = 'block';
+          return;
+        }
+        if (message.length < 5) {
+          errorEl.textContent = 'Message must be at least 5 characters.';
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        try {
+          const res = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, subject, message })
+          });
+          const result = await res.json().catch(() => ({}));
+
+          if (res.ok) {
+            alert('Message sent! We will get back to you soon.');
+            contactFormEl.reset();
+          } else {
+            errorEl.textContent = result.error || 'Something went wrong, please try again.';
+            errorEl.style.display = 'block';
+          }
+        } catch (err) {
+          errorEl.textContent = 'Connection error, please try again.';
+          errorEl.style.display = 'block';
+        }
+      });
+    }
+
     async function loadWebsiteCategories() {
       const container = document.getElementById('websiteCategoriesContainer');
       if (!container) return;
@@ -412,18 +427,18 @@
           return;
         }
         container.innerHTML = items.map(c => {
-          const imgSrc = c.image ? (c.image.startsWith('http') || c.image.startsWith('/') ? c.image : '/' + c.image) : './image/hero-dish.png.png';
+          const imgSrc = c.image ? (c.image.startsWith('http') || c.image.startsWith('/') ? escapeHtml(c.image) : '/' + escapeHtml(c.image)) : DEFAULT_DISH_IMAGE;
           const priceText = c.price ? `$${Number(c.price).toFixed(2)}` : '';
           return `
             <div class="col-md-6 col-lg-4">
               <div class="menu-card">
-                <div class="menu-img"><img src="${imgSrc}" alt="${c.name}"></div>
+                <div class="menu-img"><img src="${imgSrc}" alt="${escapeHtml(c.name)}"></div>
                 <div class="menu-body">
                   <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h4 class="mb-0">${c.name}</h4>
+                    <h4 class="mb-0">${escapeHtml(c.name)}</h4>
                     ${priceText ? `<span class="price">${priceText}</span>` : ''}
                   </div>
-                  <p>${c.description || ''}</p>
+                  <p>${escapeHtml(c.description || '')}</p>
                   <a href="#booktable" class="btn btn-sm btn-accent">Order Now</a>
                 </div>
               </div>
@@ -446,16 +461,16 @@
           return;
         }
         container.innerHTML = items.map(o => {
-          const imgSrc = o.image ? (o.image.startsWith('http') || o.image.startsWith('/') ? o.image : '/' + o.image) : './image/hero-dish.png.png';
-          const badgeHtml = o.badge ? `<span class="badge-discount">${o.badge}</span>` : '';
+          const imgSrc = o.image ? (o.image.startsWith('http') || o.image.startsWith('/') ? escapeHtml(o.image) : '/' + escapeHtml(o.image)) : DEFAULT_DISH_IMAGE;
+          const badgeHtml = o.badge ? `<span class="badge-discount">${escapeHtml(o.badge)}</span>` : '';
           return `
             <div class="col-md-4">
               <div class="offer-card">
                 ${badgeHtml}
-                <img src="${imgSrc}" alt="${o.title}">
+                <img src="${imgSrc}" alt="${escapeHtml(o.title)}">
                 <div class="offer-body">
-                  <h4>${o.title}</h4>
-                  <p>${o.description || ''}</p>
+                  <h4>${escapeHtml(o.title)}</h4>
+                  <p>${escapeHtml(o.description || '')}</p>
                   <a href="#booktable" class="btn btn-outline-accent btn-sm">Claim Offer</a>
                 </div>
               </div>
@@ -491,8 +506,8 @@
           return;
         }
         container.innerHTML = items.map(r => {
-          const imgSrc = r.image ? (r.image.startsWith('http') || r.image.startsWith('/') ? r.image : '/' + r.image) : './image/hero-dish.png.png';
-          const roleText = r.role ? `<span>${r.role}</span>` : '<span>Customer</span>';
+          const imgSrc = r.image ? (r.image.startsWith('http') || r.image.startsWith('/') ? escapeHtml(r.image) : '/' + escapeHtml(r.image)) : DEFAULT_DISH_IMAGE;
+          const roleText = r.role ? `<span>${escapeHtml(r.role)}</span>` : '<span>Customer</span>';
           return `
             <div class="col-md-4">
               <div class="review-card">
@@ -500,11 +515,11 @@
                 <div class="review-stars mb-2" style="color: #ffc107;">
                   ${renderStars(r.rating)}
                 </div>
-                <p class="review-text">${r.comment || ''}</p>
+                <p class="review-text">${escapeHtml(r.comment || '')}</p>
                 <div class="review-author">
-                  <img src="${imgSrc}" alt="${r.customer_name}">
+                  <img src="${imgSrc}" alt="${escapeHtml(r.customer_name)}">
                   <div>
-                    <h5>${r.customer_name}</h5>
+                    <h5>${escapeHtml(r.customer_name)}</h5>
                     ${roleText}
                   </div>
                 </div>
@@ -525,4 +540,4 @@
   </script>
 
 </body>
-</html>   
+</html>

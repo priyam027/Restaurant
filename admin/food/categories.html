@@ -43,7 +43,7 @@
           </ul>
           <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown user-menu">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-label="User profile">
                 <i class="bi bi-person-circle fs-5 me-1"></i>
                 <span class="d-none d-md-inline">admin</span>
               </a>
@@ -136,20 +136,20 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="catModalTitle">Add Food Category</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="catForm">
                   <div class="modal-body">
                     <input type="hidden" id="catId">
 
                     <div class="mb-3">
-                      <label class="form-label">Name</label>
+                      <label class="form-label" for="catName">Name</label>
                       <input type="text" class="form-control" id="catName" required minlength="2">
                       <div class="field-error" id="catNameError"></div>
                     </div>
 
                     <div class="mb-3">
-                      <label class="form-label d-flex justify-content-between">
+                      <label class="form-label d-flex justify-content-between" for="catDesc">
                         <span>Description</span>
                         <span class="word-counter"><span id="catDescCount">0</span> / 60 words</span>
                       </label>
@@ -158,13 +158,13 @@
                     </div>
 
                     <div class="mb-3">
-                      <label class="form-label">Price ($)</label>
+                      <label class="form-label" for="catPrice">Price ($)</label>
                       <input type="number" class="form-control" id="catPrice" step="1" min="1" placeholder="e.g. 15" required>
                       <div class="field-error" id="catPriceError"></div>
                     </div>
 
                     <div class="mb-3">
-                      <label class="form-label">Image</label>
+                      <label class="form-label" for="catImage">Image</label>
                       <input type="file" class="form-control" id="catImage" accept="image/png,image/jpeg,image/webp,image/gif">
                       <div class="field-error" id="catImageError"></div>
                     </div>
@@ -179,24 +179,33 @@
           </div>
 
           <script>
+            function escapeHtml(str) {
+              if (str == null) return '';
+              return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            }
 
-    async function uploadImageIfSelected(inputEl) {
-      if (!inputEl.files || !inputEl.files[0]) return null;
-      const formData = new FormData();
-      formData.append('image', inputEl.files[0]);
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || 'Image upload failed.');
-      }
-      const data = await res.json();
-      return data.path;
-    }
+            async function uploadImageIfSelected(inputEl) {
+              if (!inputEl.files || !inputEl.files[0]) return null;
+              const formData = new FormData();
+              formData.append('image', inputEl.files[0]);
+              const res = await fetch('/api/upload', { method: 'POST', body: formData });
+              if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || 'Image upload failed.');
+              }
+              const data = await res.json();
+              return data.path;
+            }
 
-    function showError(el, message) {
-      el.textContent = message;
-      el.style.display = message ? 'block' : 'none';
-    }
+            function showError(el, message) {
+              el.textContent = message;
+              el.style.display = message ? 'block' : 'none';
+            }
 
             let _catModal;
             function getCatModal() {
@@ -230,39 +239,47 @@
             }
 
             async function loadCategories() {
-              const res = await fetch('/api/categories');
-              const items = await res.json();
-              const tbody = document.getElementById('catBody');
-              tbody.innerHTML = '';
-              if (items.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No food categories yet</td></tr>';
-                return;
+              try {
+                const res = await fetch('/api/categories');
+                const items = await res.json();
+                const tbody = document.getElementById('catBody');
+                tbody.innerHTML = '';
+                if (!items || items.length === 0) {
+                  tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No food categories yet</td></tr>';
+                  return;
+                }
+                window.__categories = items;
+                items.forEach(c => {
+                  const img = c.image ? `<img src="/${escapeHtml(c.image)}" class="thumb-img" alt="${escapeHtml(c.name)}">` : '<span class="text-muted">No image</span>';
+                  tbody.innerHTML += `<tr>
+                    <td>${img}</td>
+                    <td>${escapeHtml(c.name)}</td>
+                    <td>${escapeHtml(c.description || '')}</td>
+                    <td>$${Number(c.price).toFixed(2)}</td>
+                    <td>
+                      <button class="btn btn-outline-primary btn-sm icon-btn" aria-label="Edit category" onclick="editCategory(${c.id})"><i class="bi bi-pencil"></i></button>
+                      <button class="btn btn-outline-danger btn-sm icon-btn" aria-label="Delete category" onclick="deleteCategory(${c.id})"><i class="bi bi-trash"></i></button>
+                    </td>
+                  </tr>`;
+                });
+              } catch (err) {
+                console.error('Failed to load categories:', err);
               }
-              window.__categories = items;
-              items.forEach(c => {
-                const img = c.image ? `<img src="/${c.image}" class="thumb-img">` : '<span class="text-muted">No image</span>';
-                tbody.innerHTML += `<tr>
-                  <td>${img}</td>
-                  <td>${c.name}</td>
-                  <td>${c.description || ''}</td>
-                  <td>$${Number(c.price).toFixed(2)}</td>
-                  <td>
-                    <button class="btn btn-outline-primary btn-sm icon-btn" onclick="editCategory(${c.id})"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-outline-danger btn-sm icon-btn" onclick="deleteCategory(${c.id})"><i class="bi bi-trash"></i></button>
-                  </td>
-                </tr>`;
-              });
             }
 
             function editCategory(id) {
-              const cat = window.__categories.find(c => c.id === id);
+              const cat = (window.__categories || []).find(c => c.id === id);
               if (cat) openCatModal(cat);
             }
 
             async function deleteCategory(id) {
               if (!confirm('Delete this category? This cannot be undone.')) return;
-              await fetch(`/api/categories/${id}`, { method: 'DELETE' });
-              loadCategories();
+              try {
+                await fetch(`/api/categories/${id}`, { method: 'DELETE' });
+                loadCategories();
+              } catch (err) {
+                console.error('Failed to delete category:', err);
+              }
             }
 
             document.getElementById('catForm').addEventListener('submit', async (e) => {
@@ -327,7 +344,11 @@
   <script>
     async function doLogout(e) {
       e.preventDefault();
-      await fetch('/api/logout', { method: 'POST' });
+      try {
+        await fetch('/api/logout', { method: 'POST' });
+      } catch (err) {
+        console.error('Logout error:', err);
+      }
       window.location.href = '../login.html';
     }
   </script>

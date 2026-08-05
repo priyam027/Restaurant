@@ -43,7 +43,7 @@
           </ul>
           <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown user-menu">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-label="User profile">
                 <i class="bi bi-person-circle fs-5 me-1"></i>
                 <span class="d-none d-md-inline">admin</span>
               </a>
@@ -135,25 +135,25 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="offerModalTitle">Add Special Offer</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="offerForm">
                   <div class="modal-body">
                     <input type="hidden" id="offerId">
 
                     <div class="mb-3">
-                      <label class="form-label">Badge (e.g. "25% OFF")</label>
+                      <label class="form-label" for="offerBadge">Badge (e.g. "25% OFF")</label>
                       <input type="text" class="form-control" id="offerBadge" maxlength="20">
                     </div>
 
                     <div class="mb-3">
-                      <label class="form-label">Title</label>
+                      <label class="form-label" for="offerTitle">Title</label>
                       <input type="text" class="form-control" id="offerTitle" required minlength="3">
                       <div class="field-error" id="offerTitleError"></div>
                     </div>
 
                     <div class="mb-3">
-                      <label class="form-label d-flex justify-content-between">
+                      <label class="form-label d-flex justify-content-between" for="offerDesc">
                         <span>Description</span>
                         <span class="word-counter"><span id="offerDescCount">0</span> / 60 words</span>
                       </label>
@@ -162,7 +162,7 @@
                     </div>
 
                     <div class="mb-3">
-                      <label class="form-label">Image</label>
+                      <label class="form-label" for="offerImage">Image</label>
                       <input type="file" class="form-control" id="offerImage" accept="image/png,image/jpeg,image/webp,image/gif">
                       <div class="field-error" id="offerImageError"></div>
                     </div>
@@ -177,24 +177,33 @@
           </div>
 
           <script>
+            function escapeHtml(str) {
+              if (str == null) return '';
+              return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            }
 
-    async function uploadImageIfSelected(inputEl) {
-      if (!inputEl.files || !inputEl.files[0]) return null;
-      const formData = new FormData();
-      formData.append('image', inputEl.files[0]);
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || 'Image upload failed.');
-      }
-      const data = await res.json();
-      return data.path;
-    }
+            async function uploadImageIfSelected(inputEl) {
+              if (!inputEl.files || !inputEl.files[0]) return null;
+              const formData = new FormData();
+              formData.append('image', inputEl.files[0]);
+              const res = await fetch('/api/upload', { method: 'POST', body: formData });
+              if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || 'Image upload failed.');
+              }
+              const data = await res.json();
+              return data.path;
+            }
 
-    function showError(el, message) {
-      el.textContent = message;
-      el.style.display = message ? 'block' : 'none';
-    }
+            function showError(el, message) {
+              el.textContent = message;
+              el.style.display = message ? 'block' : 'none';
+            }
 
             let _offerModal;
             function getOfferModal() {
@@ -228,40 +237,48 @@
             }
 
             async function loadOffers() {
-              const res = await fetch('/api/offers');
-              const items = await res.json();
-              window.__offers = items;
-              const tbody = document.getElementById('offerBody');
-              tbody.innerHTML = '';
-              if (items.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No special offers yet</td></tr>';
-                return;
+              try {
+                const res = await fetch('/api/offers');
+                const items = await res.json();
+                window.__offers = items;
+                const tbody = document.getElementById('offerBody');
+                tbody.innerHTML = '';
+                if (!items || items.length === 0) {
+                  tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No special offers yet</td></tr>';
+                  return;
+                }
+                items.forEach(o => {
+                  const img = o.image ? `<img src="/${escapeHtml(o.image)}" class="thumb-img" alt="${escapeHtml(o.title)}">` : '<span class="text-muted">No image</span>';
+                  const badge = o.badge ? `<span class="badge text-bg-danger">${escapeHtml(o.badge)}</span>` : '';
+                  tbody.innerHTML += `<tr>
+                    <td>${img}</td>
+                    <td>${badge}</td>
+                    <td>${escapeHtml(o.title)}</td>
+                    <td>${escapeHtml(o.description || '')}</td>
+                    <td>
+                      <button class="btn btn-outline-primary btn-sm icon-btn" aria-label="Edit offer" onclick="editOffer(${o.id})"><i class="bi bi-pencil"></i></button>
+                      <button class="btn btn-outline-danger btn-sm icon-btn" aria-label="Delete offer" onclick="deleteOffer(${o.id})"><i class="bi bi-trash"></i></button>
+                    </td>
+                  </tr>`;
+                });
+              } catch (err) {
+                console.error('Failed to load offers:', err);
               }
-              items.forEach(o => {
-                const img = o.image ? `<img src="/${o.image}" class="thumb-img">` : '<span class="text-muted">No image</span>';
-                const badge = o.badge ? `<span class="badge text-bg-danger">${o.badge}</span>` : '';
-                tbody.innerHTML += `<tr>
-                  <td>${img}</td>
-                  <td>${badge}</td>
-                  <td>${o.title}</td>
-                  <td>${o.description || ''}</td>
-                  <td>
-                    <button class="btn btn-outline-primary btn-sm icon-btn" onclick="editOffer(${o.id})"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-outline-danger btn-sm icon-btn" onclick="deleteOffer(${o.id})"><i class="bi bi-trash"></i></button>
-                  </td>
-                </tr>`;
-              });
             }
 
             function editOffer(id) {
-              const offer = window.__offers.find(o => o.id === id);
+              const offer = (window.__offers || []).find(o => o.id === id);
               if (offer) openOfferModal(offer);
             }
 
             async function deleteOffer(id) {
               if (!confirm('Delete this offer?')) return;
-              await fetch(`/api/offers/${id}`, { method: 'DELETE' });
-              loadOffers();
+              try {
+                await fetch(`/api/offers/${id}`, { method: 'DELETE' });
+                loadOffers();
+              } catch (err) {
+                console.error('Failed to delete offer:', err);
+              }
             }
 
             document.getElementById('offerForm').addEventListener('submit', async (e) => {
@@ -327,7 +344,11 @@
   <script>
     async function doLogout(e) {
       e.preventDefault();
-      await fetch('/api/logout', { method: 'POST' });
+      try {
+        await fetch('/api/logout', { method: 'POST' });
+      } catch (err) {
+        console.error('Logout error:', err);
+      }
       window.location.href = '../login.html';
     }
   </script>

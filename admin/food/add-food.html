@@ -36,8 +36,6 @@
         <nav class="mt-2" aria-label="Main navigation">
           <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
 
-            
-
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon bi bi-egg-fried"></i>
@@ -112,29 +110,46 @@
       <div class="app-content">
         <div class="container-fluid">
 
-          <!-- your page content goes here -->
           <form id="foodForm">
             <div class="mb-3">
+              <label for="name" class="form-label">Food Name</label>
               <input type="text" class="form-control" id="name" placeholder="Food name" required>
             </div>
             <div class="mb-3">
+              <label for="price" class="form-label">Price</label>
               <input type="number" class="form-control" id="price" placeholder="Price (integer e.g. 15)" step="1" min="1" required>
             </div>
             <div class="mb-3">
+              <label for="category_id" class="form-label">Category</label>
               <select class="form-select" id="category_id" required></select>
             </div>
             <button type="submit" class="btn btn-primary">Add Food</button>
           </form>
 
           <script>
+            function escapeHtml(str) {
+              if (str == null) return '';
+              return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            }
+
             async function loadCategoryOptions() {
-              const res = await fetch('/api/categories');
-              const items = await res.json();
-              const select = document.getElementById('category_id');
-              select.innerHTML = '<option value="">Select category</option>';
-              items.forEach(c => {
-                select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-              });
+              try {
+                const res = await fetch('/api/categories');
+                const items = await res.json();
+                const select = document.getElementById('category_id');
+                select.innerHTML = '<option value="">Select category</option>';
+                if (!items) return;
+                items.forEach(c => {
+                  select.innerHTML += `<option value="${c.id}">${escapeHtml(c.name)}</option>`;
+                });
+              } catch (err) {
+                console.error('Failed to load categories:', err);
+              }
             }
             loadCategoryOptions();
 
@@ -152,21 +167,25 @@
                 return;
               }
 
-              const res = await fetch('/api/food', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  name: nameRaw.trim(),
-                  price: price,
-                  category_id: document.getElementById('category_id').value
-                })
-              });
-              if (res.ok) {
-                alert('Food added!');
-                document.getElementById('foodForm').reset();
-              } else {
-                const err = await res.json().catch(() => ({}));
-                alert(err.error || 'Failed to add food.');
+              try {
+                const res = await fetch('/api/food', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    name: nameRaw.trim(),
+                    price: price,
+                    category_id: document.getElementById('category_id').value
+                  })
+                });
+                if (res.ok) {
+                  alert('Food added!');
+                  document.getElementById('foodForm').reset();
+                } else {
+                  const err = await res.json().catch(() => ({}));
+                  alert(err.error || 'Failed to add food.');
+                }
+              } catch (err) {
+                alert('Connection error. Failed to add food.');
               }
             });
           </script>

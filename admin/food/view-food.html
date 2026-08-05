@@ -36,8 +36,6 @@
         <nav class="mt-2" aria-label="Main navigation">
           <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
 
-            
-
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon bi bi-egg-fried"></i>
@@ -112,7 +110,6 @@
       <div class="app-content">
         <div class="container-fluid">
 
-          <!-- your page content goes here -->
           <table class="table table-bordered">
             <thead>
               <tr><th>Name</th><th>Price</th><th>Category</th></tr>
@@ -121,14 +118,29 @@
           </table>
 
           <script>
+            function escapeHtml(str) {
+              if (str == null) return '';
+              return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            }
+
             async function loadFood() {
-              const res = await fetch('/api/food');
-              const items = await res.json();
-              const tbody = document.getElementById('foodTableBody');
-              tbody.innerHTML = '';
-              items.forEach(item => {
-                tbody.innerHTML += `<tr><td>${item.name}</td><td>${item.price}</td><td>${item.category_name || ''}</td></tr>`;
-              });
+              try {
+                const res = await fetch('/api/food');
+                const items = await res.json();
+                const tbody = document.getElementById('foodTableBody');
+                tbody.innerHTML = '';
+                if (!items) return;
+                items.forEach(item => {
+                  tbody.innerHTML += `<tr><td>${escapeHtml(item.name)}</td><td>${escapeHtml(item.price)}</td><td>${escapeHtml(item.category_name || '')}</td></tr>`;
+                });
+              } catch (err) {
+                console.error('Failed to load food:', err);
+              }
             }
             loadFood();
           </script>

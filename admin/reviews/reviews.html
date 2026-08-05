@@ -43,7 +43,7 @@
           </ul>
           <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown user-menu">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-label="User profile">
                 <i class="bi bi-person-circle fs-5 me-1"></i>
                 <span class="d-none d-md-inline">admin</span>
               </a>
@@ -135,25 +135,25 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="reviewModalTitle">Add Review</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="reviewForm">
                   <div class="modal-body">
                     <input type="hidden" id="reviewId">
 
                     <div class="mb-3">
-                      <label class="form-label">Name</label>
+                      <label class="form-label" for="reviewName">Name</label>
                       <input type="text" class="form-control" id="reviewName" required minlength="2">
                       <div class="field-error" id="reviewNameError"></div>
                     </div>
 
                     <div class="mb-3">
-                      <label class="form-label">Role (e.g. "Regular Customer")</label>
+                      <label class="form-label" for="reviewRole">Role (e.g. "Regular Customer")</label>
                       <input type="text" class="form-control" id="reviewRole">
                     </div>
 
                     <div class="mb-3">
-                      <label class="form-label">Rating</label>
+                      <label class="form-label" for="reviewRating">Rating</label>
                       <select class="form-select" id="reviewRating" required>
                         <option value="">Select rating</option>
                         <option value="5">5 - Excellent</option>
@@ -166,7 +166,7 @@
                     </div>
 
                     <div class="mb-3">
-                      <label class="form-label d-flex justify-content-between">
+                      <label class="form-label d-flex justify-content-between" for="reviewComment">
                         <span>Review</span>
                         <span class="word-counter"><span id="reviewCommentCount">0</span> / 60 words</span>
                       </label>
@@ -175,7 +175,7 @@
                     </div>
 
                     <div class="mb-3">
-                      <label class="form-label">Image</label>
+                      <label class="form-label" for="reviewImage">Image</label>
                       <input type="file" class="form-control" id="reviewImage" accept="image/png,image/jpeg,image/webp,image/gif">
                       <div class="field-error" id="reviewImageError"></div>
                     </div>
@@ -190,24 +190,33 @@
           </div>
 
           <script>
+            function escapeHtml(str) {
+              if (str == null) return '';
+              return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            }
 
-    async function uploadImageIfSelected(inputEl) {
-      if (!inputEl.files || !inputEl.files[0]) return null;
-      const formData = new FormData();
-      formData.append('image', inputEl.files[0]);
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || 'Image upload failed.');
-      }
-      const data = await res.json();
-      return data.path;
-    }
+            async function uploadImageIfSelected(inputEl) {
+              if (!inputEl.files || !inputEl.files[0]) return null;
+              const formData = new FormData();
+              formData.append('image', inputEl.files[0]);
+              const res = await fetch('/api/upload', { method: 'POST', body: formData });
+              if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || 'Image upload failed.');
+              }
+              const data = await res.json();
+              return data.path;
+            }
 
-    function showError(el, message) {
-      el.textContent = message;
-      el.style.display = message ? 'block' : 'none';
-    }
+            function showError(el, message) {
+              el.textContent = message;
+              el.style.display = message ? 'block' : 'none';
+            }
 
             let _reviewModal;
             function getReviewModal() {
@@ -221,7 +230,8 @@
             });
 
             function stars(n) {
-              return '★'.repeat(n) + '☆'.repeat(5 - n);
+              const num = Math.min(5, Math.max(1, Number(n) || 5));
+              return '★'.repeat(num) + '☆'.repeat(5 - num);
             }
 
             function openReviewModal(review) {
@@ -246,40 +256,48 @@
             }
 
             async function loadReviews() {
-              const res = await fetch('/api/reviews');
-              const items = await res.json();
-              window.__reviews = items;
-              const tbody = document.getElementById('reviewBody');
-              tbody.innerHTML = '';
-              if (items.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No reviews yet</td></tr>';
-                return;
+              try {
+                const res = await fetch('/api/reviews');
+                const items = await res.json();
+                window.__reviews = items;
+                const tbody = document.getElementById('reviewBody');
+                tbody.innerHTML = '';
+                if (!items || items.length === 0) {
+                  tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No reviews yet</td></tr>';
+                  return;
+                }
+                items.forEach(r => {
+                  const img = r.image ? `<img src="/${escapeHtml(r.image)}" class="thumb-img" alt="${escapeHtml(r.customer_name)}">` : '<span class="text-muted">No image</span>';
+                  tbody.innerHTML += `<tr>
+                    <td>${img}</td>
+                    <td>${escapeHtml(r.customer_name)}</td>
+                    <td>${escapeHtml(r.role || '')}</td>
+                    <td>${escapeHtml(r.comment || '')}</td>
+                    <td class="rating-star">${stars(r.rating)}</td>
+                    <td>
+                      <button class="btn btn-outline-primary btn-sm icon-btn" aria-label="Edit review" onclick="editReview(${r.id})"><i class="bi bi-pencil"></i></button>
+                      <button class="btn btn-outline-danger btn-sm icon-btn" aria-label="Delete review" onclick="deleteReview(${r.id})"><i class="bi bi-trash"></i></button>
+                    </td>
+                  </tr>`;
+                });
+              } catch (err) {
+                console.error('Failed to load reviews:', err);
               }
-              items.forEach(r => {
-                const img = r.image ? `<img src="/${r.image}" class="thumb-img">` : '<span class="text-muted">No image</span>';
-                tbody.innerHTML += `<tr>
-                  <td>${img}</td>
-                  <td>${r.customer_name}</td>
-                  <td>${r.role || ''}</td>
-                  <td>${r.comment || ''}</td>
-                  <td class="rating-star">${stars(r.rating)}</td>
-                  <td>
-                    <button class="btn btn-outline-primary btn-sm icon-btn" onclick="editReview(${r.id})"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-outline-danger btn-sm icon-btn" onclick="deleteReview(${r.id})"><i class="bi bi-trash"></i></button>
-                  </td>
-                </tr>`;
-              });
             }
 
             function editReview(id) {
-              const review = window.__reviews.find(r => r.id === id);
+              const review = (window.__reviews || []).find(r => r.id === id);
               if (review) openReviewModal(review);
             }
 
             async function deleteReview(id) {
               if (!confirm('Delete this review?')) return;
-              await fetch(`/api/reviews/${id}`, { method: 'DELETE' });
-              loadReviews();
+              try {
+                await fetch(`/api/reviews/${id}`, { method: 'DELETE' });
+                loadReviews();
+              } catch (err) {
+                console.error('Failed to delete review:', err);
+              }
             }
 
             document.getElementById('reviewForm').addEventListener('submit', async (e) => {
@@ -350,7 +368,11 @@
   <script>
     async function doLogout(e) {
       e.preventDefault();
-      await fetch('/api/logout', { method: 'POST' });
+      try {
+        await fetch('/api/logout', { method: 'POST' });
+      } catch (err) {
+        console.error('Logout error:', err);
+      }
       window.location.href = '../login.html';
     }
   </script>

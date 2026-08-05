@@ -36,8 +36,6 @@
         <nav class="mt-2" aria-label="Main navigation">
           <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
 
-            
-
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon bi bi-egg-fried"></i>
@@ -112,7 +110,6 @@
       <div class="app-content">
         <div class="container-fluid">
 
-          <!-- your page content goes here -->
           <table class="table table-bordered">
             <thead>
               <tr><th>Name</th><th>Date</th><th>Time</th><th>Guests</th><th>Status</th></tr>
@@ -121,21 +118,36 @@
           </table>
 
           <script>
+            function escapeHtml(str) {
+              if (str == null) return '';
+              return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            }
+
             async function loadHistory() {
-              const res = await fetch('/api/bookings');
-              const items = await res.json();
-              const tbody = document.getElementById('histTableBody');
-              tbody.innerHTML = '';
-              items.filter(b => b.status !== 'pending').forEach(b => {
-                tbody.innerHTML += `
-                  <tr>
-                    <td>${b.customer_name}</td>
-                    <td>${b.date || ''}</td>
-                    <td>${b.time || ''}</td>
-                    <td>${b.guests || ''}</td>
-                    <td>${b.status}</td>
-                  </tr>`;
-              });
+              try {
+                const res = await fetch('/api/bookings');
+                const items = await res.json();
+                const tbody = document.getElementById('histTableBody');
+                tbody.innerHTML = '';
+                if (!items) return;
+                items.filter(b => b.status !== 'pending').forEach(b => {
+                  tbody.innerHTML += `
+                    <tr>
+                      <td>${escapeHtml(b.customer_name)}</td>
+                      <td>${escapeHtml(b.date || '')}</td>
+                      <td>${escapeHtml(b.time || '')}</td>
+                      <td>${escapeHtml(b.guests || '')}</td>
+                      <td>${escapeHtml(b.status)}</td>
+                    </tr>`;
+                });
+              } catch (err) {
+                console.error('Failed to load history:', err);
+              }
             }
             loadHistory();
           </script>

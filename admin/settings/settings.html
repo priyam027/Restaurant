@@ -41,7 +41,7 @@
           </ul>
           <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown user-menu">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-label="User profile">
                 <i class="bi bi-person-circle fs-5 me-1"></i>
                 <span class="d-none d-md-inline">admin</span>
               </a>
@@ -118,12 +118,12 @@
             <div class="card-body">
               <form id="pwForm">
                 <div class="mb-3">
-                  <label class="form-label">Current Password</label>
+                  <label class="form-label" for="currentPassword">Current Password</label>
                   <input type="password" class="form-control" id="currentPassword" required>
                 </div>
 
                 <div class="mb-2">
-                  <label class="form-label">New Password</label>
+                  <label class="form-label" for="newPassword">New Password</label>
                   <input type="password" class="form-control" id="newPassword" required>
                 </div>
 
@@ -136,7 +136,7 @@
                 </ul>
 
                 <div class="mb-3">
-                  <label class="form-label">Confirm New Password</label>
+                  <label class="form-label" for="confirmPassword">Confirm New Password</label>
                   <input type="password" class="form-control" id="confirmPassword" required>
                   <div class="field-error" id="confirmError"></div>
                 </div>
@@ -150,6 +150,11 @@
           </div>
 
           <script>
+            function showError(el, message) {
+              el.textContent = message;
+              el.style.display = message ? 'block' : 'none';
+            }
+
             const checks = {
               chkLength: v => v.length > 8,
               chkUpper: v => /[A-Z]/.test(v),
@@ -162,11 +167,14 @@
               const value = document.getElementById('newPassword').value;
               Object.entries(checks).forEach(([id, test]) => {
                 const li = document.getElementById(id);
+                if (!li) return;
                 const icon = li.querySelector('i');
-                if (test(value)) {
-                  icon.className = 'bi bi-check-circle text-success';
-                } else {
-                  icon.className = 'bi bi-x-circle text-danger';
+                if (icon) {
+                  if (test(value)) {
+                    icon.className = 'bi bi-check-circle text-success';
+                  } else {
+                    icon.className = 'bi bi-x-circle text-danger';
+                  }
                 }
               });
             }
@@ -196,27 +204,26 @@
                 return;
               }
 
-              const res = await fetch('/api/change-password', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ current_password, new_password })
-              });
-              const result = await res.json();
+              try {
+                const res = await fetch('/api/change-password', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ current_password, new_password })
+                });
+                const result = await res.json().catch(() => ({}));
 
-              if (!res.ok) {
-                showError(document.getElementById('pwFormError'), result.error || 'Something went wrong.');
-                return;
+                if (!res.ok) {
+                  showError(document.getElementById('pwFormError'), result.error || 'Something went wrong.');
+                  return;
+                }
+
+                document.getElementById('pwForm').reset();
+                updateChecklist();
+                document.getElementById('pwFormSuccess').style.display = 'block';
+              } catch (err) {
+                showError(document.getElementById('pwFormError'), 'Connection error. Please try again.');
               }
-
-              document.getElementById('pwForm').reset();
-              updateChecklist();
-              document.getElementById('pwFormSuccess').style.display = 'block';
             });
-
-            function showError(el, message) {
-              el.textContent = message;
-              el.style.display = message ? 'block' : 'none';
-            }
           </script>
 
         </div>
@@ -231,7 +238,11 @@
   <script>
     async function doLogout(e) {
       e.preventDefault();
-      await fetch('/api/logout', { method: 'POST' });
+      try {
+        await fetch('/api/logout', { method: 'POST' });
+      } catch (err) {
+        console.error('Logout error:', err);
+      }
       window.location.href = '../login.html';
     }
   </script>

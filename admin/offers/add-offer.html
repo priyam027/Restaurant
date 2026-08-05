@@ -116,12 +116,13 @@
       <div class="app-content">
         <div class="container-fluid">
 
-          <!-- your page content goes here -->
           <form id="offerForm">
             <div class="mb-3">
+              <label for="title" class="form-label">Offer Title</label>
               <input type="text" class="form-control" id="title" placeholder="Offer title" required>
             </div>
             <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
               <textarea class="form-control" id="description" placeholder="Description"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Add Offer</button>
@@ -137,20 +138,24 @@
                 return;
               }
 
-              const res = await fetch('/api/offers', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  title: titleRaw.trim(),
-                  description: document.getElementById('description').value.trim()
-                })
-              });
-              if (res.ok) {
-                alert('Offer added!');
-                document.getElementById('offerForm').reset();
-              } else {
-                const err = await res.json().catch(() => ({}));
-                alert(err.error || 'Failed to add offer.');
+              try {
+                const res = await fetch('/api/offers', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    title: titleRaw.trim(),
+                    description: document.getElementById('description').value.trim()
+                  })
+                });
+                if (res.ok) {
+                  alert('Offer added!');
+                  document.getElementById('offerForm').reset();
+                } else {
+                  const err = await res.json().catch(() => ({}));
+                  alert(err.error || 'Failed to add offer.');
+                }
+              } catch (err) {
+                alert('Connection error. Failed to add offer.');
               }
             });
           </script>

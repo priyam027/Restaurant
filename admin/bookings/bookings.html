@@ -42,7 +42,7 @@
           </ul>
           <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown user-menu">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-label="User profile">
                 <i class="bi bi-person-circle fs-5 me-1"></i>
                 <span class="d-none d-md-inline">admin</span>
               </a>
@@ -117,7 +117,7 @@
           <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
               <strong>Table Booking Requests</strong>
-              <select class="form-select form-select-sm w-auto ms-auto" id="statusFilter" onchange="loadBookings()">
+              <select class="form-select form-select-sm w-auto ms-auto" id="statusFilter" aria-label="Filter bookings by status" onchange="loadBookings()">
                 <option value="">All</option>
                 <option value="pending">Pending</option>
                 <option value="approved">Approved</option>
@@ -135,71 +135,94 @@
           </div>
 
           <script>
+            function escapeHtml(str) {
+              if (str == null) return '';
+              return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            }
+
             function statusBadge(status) {
               const map = { pending: 'warning', approved: 'success', rejected: 'danger' };
-              return `<span class="badge text-bg-${map[status] || 'secondary'}">${status}</span>`;
+              const clean = escapeHtml(status);
+              return `<span class="badge text-bg-${map[status] || 'secondary'}">${clean}</span>`;
             }
 
             async function loadBookings() {
-              const status = document.getElementById('statusFilter').value;
-              const url = status ? `/api/bookings?status=${status}` : '/api/bookings';
-              const res = await fetch(url);
-              if (res.status === 401) {
-                window.location.href = '../login.html';
-                return;
-              }
-              const items = await res.json();
-              const tbody = document.getElementById('bookingBody');
-              tbody.innerHTML = '';
-              if (items.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">No booking requests yet</td></tr>';
-                return;
-              }
-              items.forEach(b => {
-                let actions = '';
-                if (b.status === 'pending') {
-                  actions = `
-                    <button class="btn btn-outline-success btn-sm icon-btn me-1" title="Accept" onclick="setStatus(${b.id}, 'approved')"><i class="bi bi-check-lg"></i></button>
-                    <button class="btn btn-outline-danger btn-sm icon-btn me-1" title="Reject" onclick="setStatus(${b.id}, 'rejected')"><i class="bi bi-x-lg"></i></button>
-                    <button class="btn btn-outline-secondary btn-sm icon-btn" title="Delete" onclick="deleteBooking(${b.id})"><i class="bi bi-trash"></i></button>
-                  `;
-                } else if (b.status === 'approved') {
-                  actions = `
-                    <button class="btn btn-outline-danger btn-sm icon-btn me-1" title="Reject" onclick="setStatus(${b.id}, 'rejected')"><i class="bi bi-x-lg"></i></button>
-                    <button class="btn btn-outline-secondary btn-sm icon-btn" title="Delete" onclick="deleteBooking(${b.id})"><i class="bi bi-trash"></i></button>
-                  `;
-                } else {
-                  actions = `
-                    <button class="btn btn-outline-success btn-sm icon-btn me-1" title="Accept" onclick="setStatus(${b.id}, 'approved')"><i class="bi bi-check-lg"></i></button>
-                    <button class="btn btn-outline-secondary btn-sm icon-btn" title="Delete" onclick="deleteBooking(${b.id})"><i class="bi bi-trash"></i></button>
-                  `;
+              try {
+                const status = document.getElementById('statusFilter').value;
+                const url = status ? `/api/bookings?status=${encodeURIComponent(status)}` : '/api/bookings';
+                const res = await fetch(url);
+                if (res.status === 401) {
+                  window.location.href = '../login.html';
+                  return;
                 }
+                const items = await res.json();
+                const tbody = document.getElementById('bookingBody');
+                tbody.innerHTML = '';
+                if (!items || items.length === 0) {
+                  tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">No booking requests yet</td></tr>';
+                  return;
+                }
+                items.forEach(b => {
+                  let actions = '';
+                  if (b.status === 'pending') {
+                    actions = `
+                      <button class="btn btn-outline-success btn-sm icon-btn me-1" title="Accept" aria-label="Accept booking" onclick="setStatus(${b.id}, 'approved')"><i class="bi bi-check-lg"></i></button>
+                      <button class="btn btn-outline-danger btn-sm icon-btn me-1" title="Reject" aria-label="Reject booking" onclick="setStatus(${b.id}, 'rejected')"><i class="bi bi-x-lg"></i></button>
+                      <button class="btn btn-outline-secondary btn-sm icon-btn" title="Delete" aria-label="Delete booking" onclick="deleteBooking(${b.id})"><i class="bi bi-trash"></i></button>
+                    `;
+                  } else if (b.status === 'approved') {
+                    actions = `
+                      <button class="btn btn-outline-danger btn-sm icon-btn me-1" title="Reject" aria-label="Reject booking" onclick="setStatus(${b.id}, 'rejected')"><i class="bi bi-x-lg"></i></button>
+                      <button class="btn btn-outline-secondary btn-sm icon-btn" title="Delete" aria-label="Delete booking" onclick="deleteBooking(${b.id})"><i class="bi bi-trash"></i></button>
+                    `;
+                  } else {
+                    actions = `
+                      <button class="btn btn-outline-success btn-sm icon-btn me-1" title="Accept" aria-label="Accept booking" onclick="setStatus(${b.id}, 'approved')"><i class="bi bi-check-lg"></i></button>
+                      <button class="btn btn-outline-secondary btn-sm icon-btn" title="Delete" aria-label="Delete booking" onclick="deleteBooking(${b.id})"><i class="bi bi-trash"></i></button>
+                    `;
+                  }
 
-                tbody.innerHTML += `<tr>
-                  <td>${b.customer_name}</td>
-                  <td>${b.phone || ''}<br><small class="text-muted">${b.email || ''}</small></td>
-                  <td>${b.guests || ''}</td>
-                  <td>${b.date || ''} ${b.time || ''}</td>
-                  <td>${b.message || ''}</td>
-                  <td>${statusBadge(b.status)}</td>
-                  <td>${actions}</td>
-                </tr>`;
-              });
+                  tbody.innerHTML += `<tr>
+                    <td>${escapeHtml(b.customer_name)}</td>
+                    <td>${escapeHtml(b.phone || '')}<br><small class="text-muted">${escapeHtml(b.email || '')}</small></td>
+                    <td>${escapeHtml(b.guests || '')}</td>
+                    <td>${escapeHtml(b.date || '')} ${escapeHtml(b.time || '')}</td>
+                    <td>${escapeHtml(b.message || '')}</td>
+                    <td>${statusBadge(b.status)}</td>
+                    <td>${actions}</td>
+                  </tr>`;
+                });
+              } catch (err) {
+                console.error('Failed to load bookings:', err);
+              }
             }
 
             async function setStatus(id, status) {
-              await fetch(`/api/bookings/${id}/status`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status })
-              });
-              loadBookings();
+              try {
+                await fetch(`/api/bookings/${id}/status`, {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ status })
+                });
+                loadBookings();
+              } catch (err) {
+                console.error('Failed to update status:', err);
+              }
             }
 
             async function deleteBooking(id) {
               if (!confirm('Remove this booking record?')) return;
-              await fetch(`/api/bookings/${id}`, { method: 'DELETE' });
-              loadBookings();
+              try {
+                await fetch(`/api/bookings/${id}`, { method: 'DELETE' });
+                loadBookings();
+              } catch (err) {
+                console.error('Failed to delete booking:', err);
+              }
             }
 
             loadBookings();
@@ -217,7 +240,11 @@
   <script>
     async function doLogout(e) {
       e.preventDefault();
-      await fetch('/api/logout', { method: 'POST' });
+      try {
+        await fetch('/api/logout', { method: 'POST' });
+      } catch (err) {
+        console.error('Logout error:', err);
+      }
       window.location.href = '../login.html';
     }
   </script>

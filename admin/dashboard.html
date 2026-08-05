@@ -42,7 +42,7 @@
           </ul>
           <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown user-menu">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-label="User profile">
                 <i class="bi bi-person-circle fs-5 me-1"></i>
                 <span class="d-none d-md-inline">admin</span>
               </a>
@@ -166,38 +166,53 @@
           </div>
 
           <script>
+            function escapeHtml(str) {
+              if (str == null) return '';
+              return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            }
+
             function statusBadge(status) {
               const map = { pending: 'warning', approved: 'success', rejected: 'danger' };
-              return `<span class="badge text-bg-${map[status] || 'secondary'}">${status}</span>`;
+              const clean = escapeHtml(status);
+              return `<span class="badge text-bg-${map[status] || 'secondary'}">${clean}</span>`;
             }
 
             async function loadStats() {
-              const res = await fetch('/api/stats');
-              if (res.status === 401) {
-                window.location.href = 'login.html';
-                return;
-              }
-              const data = await res.json();
-              document.getElementById('statPending').textContent = data.pending_requests;
-              document.getElementById('statConfirmed').textContent = data.confirmed_bookings;
-              document.getElementById('statCategories').textContent = data.food_categories;
-              document.getElementById('statReviews').textContent = data.customer_reviews;
+              try {
+                const res = await fetch('/api/stats');
+                if (res.status === 401) {
+                  window.location.href = 'login.html';
+                  return;
+                }
+                const data = await res.json();
+                document.getElementById('statPending').textContent = data.pending_requests || 0;
+                document.getElementById('statConfirmed').textContent = data.confirmed_bookings || 0;
+                document.getElementById('statCategories').textContent = data.food_categories || 0;
+                document.getElementById('statReviews').textContent = data.customer_reviews || 0;
 
-              const tbody = document.getElementById('recentBody');
-              tbody.innerHTML = '';
-              if (data.recent_bookings.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No bookings yet</td></tr>';
-                return;
+                const tbody = document.getElementById('recentBody');
+                tbody.innerHTML = '';
+                if (!data.recent_bookings || data.recent_bookings.length === 0) {
+                  tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No bookings yet</td></tr>';
+                  return;
+                }
+                data.recent_bookings.forEach(b => {
+                  tbody.innerHTML += `<tr>
+                    <td>${escapeHtml(b.customer_name)}</td>
+                    <td>${escapeHtml(b.date || '')}</td>
+                    <td>${escapeHtml(b.time || '')}</td>
+                    <td>${escapeHtml(b.guests || '')}</td>
+                    <td>${statusBadge(b.status)}</td>
+                  </tr>`;
+                });
+              } catch (e) {
+                console.error('Failed to load dashboard stats:', e);
               }
-              data.recent_bookings.forEach(b => {
-                tbody.innerHTML += `<tr>
-                  <td>${b.customer_name}</td>
-                  <td>${b.date || ''}</td>
-                  <td>${b.time || ''}</td>
-                  <td>${b.guests || ''}</td>
-                  <td>${statusBadge(b.status)}</td>
-                </tr>`;
-              });
             }
             loadStats();
           </script>
@@ -214,7 +229,11 @@
   <script>
     async function doLogout(e) {
       e.preventDefault();
-      await fetch('/api/logout', { method: 'POST' });
+      try {
+        await fetch('/api/logout', { method: 'POST' });
+      } catch (err) {
+        console.error('Logout error:', err);
+      }
       window.location.href = 'login.html';
     }
   </script>
