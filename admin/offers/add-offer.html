@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bella Fiamma Admin | Add Offer</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="../css/adminlte.css" />
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+
+    <!-- Header -->
+    <nav class="app-header navbar navbar-expand bg-body">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button" aria-label="Toggle sidebar">
+              <i class="bi bi-list"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <div class="sidebar-brand">
+        <a href="../dashboard.html" class="brand-link">
+          <span class="brand-text fw-light">Bella Fiamma</span>
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <nav class="mt-2" aria-label="Main navigation">
+          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
+
+            <li class="nav-item">
+              <a href="../dashboard.html" class="nav-link">
+                <i class="nav-icon bi bi-speedometer"></i><p>Dashboard</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon bi bi-egg-fried"></i>
+                <p>Food Management<i class="nav-arrow bi bi-chevron-right"></i></p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item"><a href="../food/add-food.html" class="nav-link"><p>Add Food</p></a></li>
+                <li class="nav-item"><a href="../food/view-food.html" class="nav-link"><p>View Food</p></a></li>
+                <li class="nav-item"><a href="../food/categories.html" class="nav-link"><p>Categories</p></a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon bi bi-tag"></i>
+                <p>Offers<i class="nav-arrow bi bi-chevron-right"></i></p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item"><a href="../offers/add-offer.html" class="nav-link"><p>Add Offer</p></a></li>
+                <li class="nav-item"><a href="../offers/view-offers.html" class="nav-link"><p>View Offers</p></a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon bi bi-calendar-check"></i>
+                <p>Bookings<i class="nav-arrow bi bi-chevron-right"></i></p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item"><a href="../bookings/bookings.html" class="nav-link"><p>Booking Requests</p></a></li>
+                <li class="nav-item"><a href="../bookings/booking-history.html" class="nav-link"><p>Booking History</p></a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a href="../reviews/reviews.html" class="nav-link">
+                <i class="nav-icon bi bi-star"></i><p>Reviews</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="../settings/settings.html" class="nav-link">
+                <i class="nav-icon bi bi-gear"></i><p>Settings</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="../../index.html" class="nav-link" target="_blank" rel="noopener noreferrer">
+                <i class="nav-icon bi bi-globe"></i><p>View Website</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="../login.html" class="nav-link">
+                <i class="nav-icon bi bi-box-arrow-right"></i><p>Logout</p>
+              </a>
+            </li>
+
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <h1 class="mb-0 fs-3">Add Offer</h1>
+        </div>
+      </div>
+
+      <div class="app-content">
+        <div class="container-fluid">
+
+          <!-- your page content goes here -->
+          <form id="offerForm">
+            <div class="mb-3">
+              <input type="text" class="form-control" id="title" placeholder="Offer title" required>
+            </div>
+            <div class="mb-3">
+              <textarea class="form-control" id="description" placeholder="Description"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Offer</button>
+          </form>
+
+          <script>
+            document.getElementById('offerForm').addEventListener('submit', async (e) => {
+              e.preventDefault();
+              const titleRaw = document.getElementById('title').value;
+
+              if (!titleRaw || !/^[^\s]+(?: [^\s]+)*$/.test(titleRaw)) {
+                alert('Title cannot be empty, must not have leading/trailing spaces, and allows only 1 single space between words.');
+                return;
+              }
+
+              const res = await fetch('/api/offers', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  title: titleRaw.trim(),
+                  description: document.getElementById('description').value.trim()
+                })
+              });
+              if (res.ok) {
+                alert('Offer added!');
+                document.getElementById('offerForm').reset();
+              } else {
+                const err = await res.json().catch(() => ({}));
+                alert(err.error || 'Failed to add offer.');
+              }
+            });
+          </script>
+
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/admin-lte@4/dist/js/adminlte.min.js"></script>
+</body>
+</html>

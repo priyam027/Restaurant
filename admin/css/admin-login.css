@@ -1,0 +1,159 @@
+/* ============================
+   Basic reset - removes default
+   spacing browsers add
+============================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ============================
+   Page background
+   Same black tone as main site
+============================ */
+body {
+  background-color: #0d0d0d;
+  min-height: 100vh;
+}
+
+/* ============================
+   Wrapper - centers the login
+   box in the middle of screen
+============================ */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* ============================
+   The login card itself
+============================ */
+.login-box {
+  background-color: #171717;
+  border: 1px solid #2a2a2a;
+  border-radius: 14px;
+  padding: 45px 40px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(255, 122, 26, 0.08);
+}
+
+/* ============================
+   Logo text (Bella Fiamma)
+============================ */
+.logo {
+  font-family: 'Playfair Display', serif;
+  color: #ffffff;
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.logo span {
+  color: #ff7a1a; /* same orange used on main website */
+}
+
+.subtitle {
+  color: #a0a0a0;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+/* ============================
+   Input fields
+============================ */
+.input-group {
+  text-align: left;
+  margin-bottom: 18px;
+}
+
+.input-group label {
+  display: block;
+  color: #d9d9d9;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 14px;
+  background-color: #0d0d0d;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+/* orange border glow when user clicks the input */
+.input-group input:focus {
+  border-color: #ff7a1a;
+}
+
+.input-group input::placeholder {
+  color: #6b6b6b;
+}
+
+/* ============================
+   Remember me + Forgot password row
+============================ */
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  font-size: 13px;
+}
+
+.remember {
+  color: #b3b3b3;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.forgot {
+  color: #ff7a1a;
+  text-decoration: none;
+}
+
+.forgot:hover {
+  text-decoration: underline;
+}
+
+/* ============================
+   Login button
+   Same orange as "View Menu" button
+============================ */
+.login-btn {
+  width: 100%;
+  padding: 13px;
+  background-color: #ff7a1a;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.login-btn:hover {
+  background-color: #e56a10;
+}
+
+/* ============================
+   Bottom small text
+============================ */
+.footer-text {
+  margin-top: 20px;
+  color: #6b6b6b;
+  font-size: 12px;
+}

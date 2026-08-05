@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bella Fiamma - Admin Login</title>
+
+  <!-- linking our separate CSS file -->
+  <link rel="stylesheet" href="./css/admin-login.css">
+
+  <!-- Google Font for the logo text (same style feel as main site) -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- main wrapper that centers the login box on the page -->
+  <div class="login-wrapper">
+
+    <div class="login-box">
+
+      <!-- Logo, same colors as main website: white + orange -->
+      <h1 class="logo">Bella <span>Fiamma</span></h1>
+      <p class="subtitle">Admin Panel Login</p>
+
+      <!-- Login form -->
+      <form id="loginForm">
+
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="Enter your username" required>
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+
+        <p class="footer-text" id="loginError" style="color:#ff4d4d; display:none; margin-bottom:15px;"></p>
+
+        <button type="submit" class="login-btn">Login</button>
+
+      </form>
+
+      <p class="footer-text">Only authorized admins can access this panel.</p>
+
+    </div>
+
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      const errorEl = document.getElementById('loginError');
+      errorEl.style.display = 'none';
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        errorEl.textContent = 'Please enter both username and password.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      try {
+        btn.disabled = true;
+        btn.textContent = 'Logging in...';
+
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const result = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          errorEl.textContent = result.error || 'Invalid username or password.';
+          errorEl.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Login';
+          return;
+        }
+
+        window.location.href = '/admin/dashboard.html';
+      } catch (err) {
+        errorEl.textContent = 'Connection error. Please try again.';
+        errorEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Login';
+      }
+    });
+  </script>
+
+</body>
+</html>

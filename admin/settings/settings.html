@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bella Fiamma Admin | Settings</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="../css/adminlte.css" />
+  <style>
+    .icon-btn { width: 34px; height: 34px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+    .stat-card { border: none; color: #fff; border-radius: .5rem; }
+    .stat-card .stat-icon { font-size: 2rem; opacity: .85; }
+    .thumb-img { width: 56px; height: 56px; object-fit: cover; border-radius: .375rem; }
+    .modal-header { border-bottom: 1px solid #dee2e6; }
+    .word-counter { font-size: .8rem; color: #6c757d; }
+    .field-error { color: #dc3545; font-size: .825rem; margin-top: .25rem; display: none; }
+    .rating-star { color: #ffc107; }
+  </style>
+  <script>
+    (async function() {
+      try {
+        const res = await fetch('/api/check-auth');
+        if (!res.ok) window.location.href = '../login.html';
+      } catch(e) {
+        window.location.href = '../login.html';
+      }
+    })();
+  </script>
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+      <nav class="app-header navbar navbar-expand bg-body">
+        <div class="container-fluid">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button" aria-label="Toggle sidebar">
+                <i class="bi bi-list"></i>
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown user-menu">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle fs-5 me-1"></i>
+                <span class="d-none d-md-inline">admin</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+        <div class="sidebar-brand">
+          <a href="../dashboard.html" class="brand-link">
+            <i class="bi bi-fire text-warning fs-4 me-1"></i>
+            <span class="brand-text fw-light">Bella Fiamma Admin</span>
+          </a>
+        </div>
+        <div class="sidebar-wrapper">
+          <nav class="mt-2" aria-label="Main navigation">
+            <ul class="nav sidebar-menu flex-column" id="navigation">
+              <li class="nav-item">
+                <a href="../dashboard.html" class="nav-link">
+                  <i class="nav-icon bi bi-grid-1x2"></i><p>Overview</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../bookings/bookings.html" class="nav-link">
+                  <i class="nav-icon bi bi-calendar-check"></i><p>Table Bookings</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../food/categories.html" class="nav-link">
+                  <i class="nav-icon bi bi-egg-fried"></i><p>Food Categories</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../offers/view-offers.html" class="nav-link">
+                  <i class="nav-icon bi bi-tag"></i><p>Special Offers</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../reviews/reviews.html" class="nav-link">
+                  <i class="nav-icon bi bi-chat-square-quote"></i><p>Customer Reviews</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../settings/settings.html" class="nav-link active">
+                  <i class="nav-icon bi bi-gear"></i><p>Settings</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../../index.html" class="nav-link" target="_blank" rel="noopener noreferrer">
+                  <i class="nav-icon bi bi-box-arrow-up-right"></i><p>View Website</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" onclick="doLogout(event)">
+                  <i class="nav-icon bi bi-box-arrow-right"></i><p>Logout</p>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </aside>
+
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <h1 class="mb-0 fs-3">Settings</h1>
+        </div>
+      </div>
+
+      <div class="app-content">
+        <div class="container-fluid">
+          <div class="card" style="max-width: 500px;">
+            <div class="card-header"><strong>Change Admin Password</strong></div>
+            <div class="card-body">
+              <form id="pwForm">
+                <div class="mb-3">
+                  <label class="form-label">Current Password</label>
+                  <input type="password" class="form-control" id="currentPassword" required>
+                </div>
+
+                <div class="mb-2">
+                  <label class="form-label">New Password</label>
+                  <input type="password" class="form-control" id="newPassword" required>
+                </div>
+
+                <ul class="list-unstyled mb-3" id="pwChecklist" style="font-size:.9rem;">
+                  <li id="chkLength"><i class="bi bi-x-circle text-danger"></i> More than 8 characters</li>
+                  <li id="chkUpper"><i class="bi bi-x-circle text-danger"></i> Contains a capital letter</li>
+                  <li id="chkLower"><i class="bi bi-x-circle text-danger"></i> Contains a lowercase letter</li>
+                  <li id="chkNumber"><i class="bi bi-x-circle text-danger"></i> Contains a number</li>
+                  <li id="chkUnderscore"><i class="bi bi-x-circle text-danger"></i> Contains an underscore (_)</li>
+                </ul>
+
+                <div class="mb-3">
+                  <label class="form-label">Confirm New Password</label>
+                  <input type="password" class="form-control" id="confirmPassword" required>
+                  <div class="field-error" id="confirmError"></div>
+                </div>
+
+                <div class="field-error mb-2" id="pwFormError"></div>
+                <div class="text-success mb-2" id="pwFormSuccess" style="display:none;">Password updated successfully.</div>
+
+                <button type="submit" class="btn btn-primary">Update Password</button>
+              </form>
+            </div>
+          </div>
+
+          <script>
+            const checks = {
+              chkLength: v => v.length > 8,
+              chkUpper: v => /[A-Z]/.test(v),
+              chkLower: v => /[a-z]/.test(v),
+              chkNumber: v => /[0-9]/.test(v),
+              chkUnderscore: v => v.includes('_'),
+            };
+
+            function updateChecklist() {
+              const value = document.getElementById('newPassword').value;
+              Object.entries(checks).forEach(([id, test]) => {
+                const li = document.getElementById(id);
+                const icon = li.querySelector('i');
+                if (test(value)) {
+                  icon.className = 'bi bi-check-circle text-success';
+                } else {
+                  icon.className = 'bi bi-x-circle text-danger';
+                }
+              });
+            }
+            document.getElementById('newPassword').addEventListener('input', updateChecklist);
+
+            document.getElementById('pwForm').addEventListener('submit', async (e) => {
+              e.preventDefault();
+              const current_password = document.getElementById('currentPassword').value;
+              const new_password = document.getElementById('newPassword').value;
+              const confirm_password = document.getElementById('confirmPassword').value;
+
+              showError(document.getElementById('pwFormError'), '');
+              showError(document.getElementById('confirmError'), '');
+              document.getElementById('pwFormSuccess').style.display = 'none';
+
+              const allPass = Object.values(checks).every(test => test(new_password));
+              if (!allPass) {
+                showError(document.getElementById('pwFormError'), 'New password does not meet all the requirements above.');
+                return;
+              }
+              if (current_password === new_password) {
+                showError(document.getElementById('pwFormError'), 'New password cannot be the same as current password.');
+                return;
+              }
+              if (new_password !== confirm_password) {
+                showError(document.getElementById('confirmError'), 'Passwords do not match.');
+                return;
+              }
+
+              const res = await fetch('/api/change-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ current_password, new_password })
+              });
+              const result = await res.json();
+
+              if (!res.ok) {
+                showError(document.getElementById('pwFormError'), result.error || 'Something went wrong.');
+                return;
+              }
+
+              document.getElementById('pwForm').reset();
+              updateChecklist();
+              document.getElementById('pwFormSuccess').style.display = 'block';
+            });
+
+            function showError(el, message) {
+              el.textContent = message;
+              el.style.display = message ? 'block' : 'none';
+            }
+          </script>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/admin-lte@4/dist/js/adminlte.min.js"></script>
+  <script>
+    async function doLogout(e) {
+      e.preventDefault();
+      await fetch('/api/logout', { method: 'POST' });
+      window.location.href = '../login.html';
+    }
+  </script>
+</body>
+</html>

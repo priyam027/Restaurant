@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bella Fiamma Admin | Customer Reviews</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="../css/adminlte.css" />
+  <style>
+    .icon-btn { width: 34px; height: 34px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+    .stat-card { border: none; color: #fff; border-radius: .5rem; }
+    .stat-card .stat-icon { font-size: 2rem; opacity: .85; }
+    .thumb-img { width: 56px; height: 56px; object-fit: cover; border-radius: .375rem; }
+    .modal-header { border-bottom: 1px solid #dee2e6; }
+    .word-counter { font-size: .8rem; color: #6c757d; }
+    .field-error { color: #dc3545; font-size: .825rem; margin-top: .25rem; display: none; }
+    .rating-star { color: #ffc107; }
+    .card-header::after { display: none !important; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+  <script>
+    (async function() {
+      try {
+        const res = await fetch('/api/check-auth');
+        if (!res.ok) window.location.href = '../login.html';
+      } catch(e) {
+        window.location.href = '../login.html';
+      }
+    })();
+  </script>
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+      <nav class="app-header navbar navbar-expand bg-body">
+        <div class="container-fluid">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button" aria-label="Toggle sidebar">
+                <i class="bi bi-list"></i>
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown user-menu">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle fs-5 me-1"></i>
+                <span class="d-none d-md-inline">admin</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+        <div class="sidebar-brand">
+          <a href="../dashboard.html" class="brand-link">
+            <i class="bi bi-fire text-warning fs-4 me-1"></i>
+            <span class="brand-text fw-light">Bella Fiamma Admin</span>
+          </a>
+        </div>
+        <div class="sidebar-wrapper">
+          <nav class="mt-2" aria-label="Main navigation">
+            <ul class="nav sidebar-menu flex-column" id="navigation">
+              <li class="nav-item">
+                <a href="../dashboard.html" class="nav-link">
+                  <i class="nav-icon bi bi-grid-1x2"></i><p>Overview</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../bookings/bookings.html" class="nav-link">
+                  <i class="nav-icon bi bi-calendar-check"></i><p>Table Bookings</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../food/categories.html" class="nav-link">
+                  <i class="nav-icon bi bi-egg-fried"></i><p>Food Categories</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../offers/view-offers.html" class="nav-link">
+                  <i class="nav-icon bi bi-tag"></i><p>Special Offers</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../reviews/reviews.html" class="nav-link active">
+                  <i class="nav-icon bi bi-chat-square-quote"></i><p>Customer Reviews</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../settings/settings.html" class="nav-link">
+                  <i class="nav-icon bi bi-gear"></i><p>Settings</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../../index.html" class="nav-link" target="_blank" rel="noopener noreferrer">
+                  <i class="nav-icon bi bi-box-arrow-up-right"></i><p>View Website</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" onclick="doLogout(event)">
+                  <i class="nav-icon bi bi-box-arrow-right"></i><p>Logout</p>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </aside>
+
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <h1 class="mb-0 fs-3">Customer Reviews</h1>
+        </div>
+      </div>
+
+      <div class="app-content">
+        <div class="container-fluid">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>What Our Customers Say</strong>
+              <button class="btn btn-primary btn-sm" onclick="openReviewModal()"><i class="bi bi-plus-lg"></i> Add Review</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table mb-0 align-middle">
+                <thead><tr><th>Image</th><th>Name</th><th>Role</th><th>Review</th><th>Rating</th><th>Action</th></tr></thead>
+                <tbody id="reviewBody">
+                  <tr><td colspan="6" class="text-center text-muted py-4">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="modal fade" id="reviewModal" tabindex="-1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="reviewModalTitle">Add Review</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="reviewForm">
+                  <div class="modal-body">
+                    <input type="hidden" id="reviewId">
+
+                    <div class="mb-3">
+                      <label class="form-label">Name</label>
+                      <input type="text" class="form-control" id="reviewName" required minlength="2">
+                      <div class="field-error" id="reviewNameError"></div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Role (e.g. "Regular Customer")</label>
+                      <input type="text" class="form-control" id="reviewRole">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Rating</label>
+                      <select class="form-select" id="reviewRating" required>
+                        <option value="">Select rating</option>
+                        <option value="5">5 - Excellent</option>
+                        <option value="4">4 - Good</option>
+                        <option value="3">3 - Average</option>
+                        <option value="2">2 - Poor</option>
+                        <option value="1">1 - Terrible</option>
+                      </select>
+                      <div class="field-error" id="reviewRatingError"></div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label d-flex justify-content-between">
+                        <span>Review</span>
+                        <span class="word-counter"><span id="reviewCommentCount">0</span> / 60 words</span>
+                      </label>
+                      <textarea class="form-control" id="reviewComment" rows="3"></textarea>
+                      <div class="field-error" id="reviewCommentError"></div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Image</label>
+                      <input type="file" class="form-control" id="reviewImage" accept="image/png,image/jpeg,image/webp,image/gif">
+                      <div class="field-error" id="reviewImageError"></div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <script>
+
+    async function uploadImageIfSelected(inputEl) {
+      if (!inputEl.files || !inputEl.files[0]) return null;
+      const formData = new FormData();
+      formData.append('image', inputEl.files[0]);
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Image upload failed.');
+      }
+      const data = await res.json();
+      return data.path;
+    }
+
+    function showError(el, message) {
+      el.textContent = message;
+      el.style.display = message ? 'block' : 'none';
+    }
+
+            let _reviewModal;
+            function getReviewModal() {
+              if (!_reviewModal) _reviewModal = new bootstrap.Modal(document.getElementById('reviewModal'));
+              return _reviewModal;
+            }
+
+            document.getElementById('reviewComment').addEventListener('input', (e) => {
+              const words = e.target.value.trim().split(/\s+/).filter(Boolean);
+              document.getElementById('reviewCommentCount').textContent = words.length;
+            });
+
+            function stars(n) {
+              return '★'.repeat(n) + '☆'.repeat(5 - n);
+            }
+
+            function openReviewModal(review) {
+              document.getElementById('reviewForm').reset();
+              document.getElementById('reviewCommentCount').textContent = '0';
+              ['reviewNameError','reviewRatingError','reviewCommentError','reviewImageError'].forEach(id => showError(document.getElementById(id), ''));
+
+              if (review) {
+                document.getElementById('reviewModalTitle').textContent = 'Edit Review';
+                document.getElementById('reviewId').value = review.id;
+                document.getElementById('reviewName').value = review.customer_name;
+                document.getElementById('reviewRole').value = review.role || '';
+                document.getElementById('reviewRating').value = review.rating;
+                document.getElementById('reviewComment').value = review.comment || '';
+                const words = (review.comment || '').trim().split(/\s+/).filter(Boolean);
+                document.getElementById('reviewCommentCount').textContent = words.length;
+              } else {
+                document.getElementById('reviewModalTitle').textContent = 'Add Review';
+                document.getElementById('reviewId').value = '';
+              }
+              getReviewModal().show();
+            }
+
+            async function loadReviews() {
+              const res = await fetch('/api/reviews');
+              const items = await res.json();
+              window.__reviews = items;
+              const tbody = document.getElementById('reviewBody');
+              tbody.innerHTML = '';
+              if (items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No reviews yet</td></tr>';
+                return;
+              }
+              items.forEach(r => {
+                const img = r.image ? `<img src="/${r.image}" class="thumb-img">` : '<span class="text-muted">No image</span>';
+                tbody.innerHTML += `<tr>
+                  <td>${img}</td>
+                  <td>${r.customer_name}</td>
+                  <td>${r.role || ''}</td>
+                  <td>${r.comment || ''}</td>
+                  <td class="rating-star">${stars(r.rating)}</td>
+                  <td>
+                    <button class="btn btn-outline-primary btn-sm icon-btn" onclick="editReview(${r.id})"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-outline-danger btn-sm icon-btn" onclick="deleteReview(${r.id})"><i class="bi bi-trash"></i></button>
+                  </td>
+                </tr>`;
+              });
+            }
+
+            function editReview(id) {
+              const review = window.__reviews.find(r => r.id === id);
+              if (review) openReviewModal(review);
+            }
+
+            async function deleteReview(id) {
+              if (!confirm('Delete this review?')) return;
+              await fetch(`/api/reviews/${id}`, { method: 'DELETE' });
+              loadReviews();
+            }
+
+            document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+              e.preventDefault();
+
+              ['reviewNameError','reviewRatingError','reviewCommentError','reviewImageError'].forEach(id => showError(document.getElementById(id), ''));
+
+              const nameRaw = document.getElementById('reviewName').value;
+              const customer_name = nameRaw.trim();
+              const roleRaw = document.getElementById('reviewRole').value;
+              const role = roleRaw.trim();
+              const rating = document.getElementById('reviewRating').value;
+              const comment = document.getElementById('reviewComment').value.trim();
+              const id = document.getElementById('reviewId').value;
+              let hasError = false;
+
+              if (!nameRaw || !/^[^\s]+(?: [^\s]+)*$/.test(nameRaw) || customer_name.length < 2) {
+                showError(document.getElementById('reviewNameError'), 'Name cannot be empty, must not have leading/trailing spaces, and allows only 1 single space between words.');
+                hasError = true;
+              }
+              if (roleRaw && !/^[^\s]+(?: [^\s]+)*$/.test(roleRaw)) {
+                showError(document.getElementById('reviewNameError'), 'Role must not have leading/trailing spaces and allows only 1 single space between words.');
+                hasError = true;
+              }
+              if (!rating) {
+                showError(document.getElementById('reviewRatingError'), 'Please select a rating.');
+                hasError = true;
+              }
+              if (comment.split(/\s+/).filter(Boolean).length > 60) {
+                showError(document.getElementById('reviewCommentError'), 'Review must be 60 words or fewer.');
+                hasError = true;
+              }
+              if (hasError) return;
+
+              try {
+                const imagePath = await uploadImageIfSelected(document.getElementById('reviewImage'));
+                const payload = { customer_name, role, rating, comment, image: imagePath };
+
+                const res = id
+                  ? await fetch(`/api/reviews/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+                  : await fetch('/api/reviews', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+
+                const result = await res.json();
+                if (!res.ok) { showError(document.getElementById('reviewNameError'), result.error || 'Something went wrong.'); return; }
+
+                getReviewModal().hide();
+                loadReviews();
+              } catch (err) {
+                showError(document.getElementById('reviewImageError'), err.message);
+              }
+            });
+
+            loadReviews();
+            if (new URLSearchParams(window.location.search).get('action') === 'add') {
+              openReviewModal();
+            }
+          </script>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/admin-lte@4/dist/js/adminlte.min.js"></script>
+  <script>
+    async function doLogout(e) {
+      e.preventDefault();
+      await fetch('/api/logout', { method: 'POST' });
+      window.location.href = '../login.html';
+    }
+  </script>
+</body>
+</html>

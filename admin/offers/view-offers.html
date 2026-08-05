@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bella Fiamma Admin | Special Offers</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="../css/adminlte.css" />
+  <style>
+    .icon-btn { width: 34px; height: 34px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+    .stat-card { border: none; color: #fff; border-radius: .5rem; }
+    .stat-card .stat-icon { font-size: 2rem; opacity: .85; }
+    .thumb-img { width: 56px; height: 56px; object-fit: cover; border-radius: .375rem; }
+    .modal-header { border-bottom: 1px solid #dee2e6; }
+    .word-counter { font-size: .8rem; color: #6c757d; }
+    .field-error { color: #dc3545; font-size: .825rem; margin-top: .25rem; display: none; }
+    .rating-star { color: #ffc107; }
+    .card-header::after { display: none !important; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+  <script>
+    (async function() {
+      try {
+        const res = await fetch('/api/check-auth');
+        if (!res.ok) window.location.href = '../login.html';
+      } catch(e) {
+        window.location.href = '../login.html';
+      }
+    })();
+  </script>
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+      <nav class="app-header navbar navbar-expand bg-body">
+        <div class="container-fluid">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button" aria-label="Toggle sidebar">
+                <i class="bi bi-list"></i>
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown user-menu">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle fs-5 me-1"></i>
+                <span class="d-none d-md-inline">admin</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+        <div class="sidebar-brand">
+          <a href="../dashboard.html" class="brand-link">
+            <i class="bi bi-fire text-warning fs-4 me-1"></i>
+            <span class="brand-text fw-light">Bella Fiamma Admin</span>
+          </a>
+        </div>
+        <div class="sidebar-wrapper">
+          <nav class="mt-2" aria-label="Main navigation">
+            <ul class="nav sidebar-menu flex-column" id="navigation">
+              <li class="nav-item">
+                <a href="../dashboard.html" class="nav-link">
+                  <i class="nav-icon bi bi-grid-1x2"></i><p>Overview</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../bookings/bookings.html" class="nav-link">
+                  <i class="nav-icon bi bi-calendar-check"></i><p>Table Bookings</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../food/categories.html" class="nav-link">
+                  <i class="nav-icon bi bi-egg-fried"></i><p>Food Categories</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../offers/view-offers.html" class="nav-link active">
+                  <i class="nav-icon bi bi-tag"></i><p>Special Offers</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../reviews/reviews.html" class="nav-link">
+                  <i class="nav-icon bi bi-chat-square-quote"></i><p>Customer Reviews</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../settings/settings.html" class="nav-link">
+                  <i class="nav-icon bi bi-gear"></i><p>Settings</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../../index.html" class="nav-link" target="_blank" rel="noopener noreferrer">
+                  <i class="nav-icon bi bi-box-arrow-up-right"></i><p>View Website</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" onclick="doLogout(event)">
+                  <i class="nav-icon bi bi-box-arrow-right"></i><p>Logout</p>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </aside>
+
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <h1 class="mb-0 fs-3">Special Offers</h1>
+        </div>
+      </div>
+
+      <div class="app-content">
+        <div class="container-fluid">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <strong>Special Offers</strong>
+              <button class="btn btn-primary btn-sm" onclick="openOfferModal()"><i class="bi bi-plus-lg"></i> Add Offer</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table mb-0 align-middle">
+                <thead><tr><th>Image</th><th>Badge</th><th>Title</th><th>Description</th><th>Action</th></tr></thead>
+                <tbody id="offerBody">
+                  <tr><td colspan="5" class="text-center text-muted py-4">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="modal fade" id="offerModal" tabindex="-1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="offerModalTitle">Add Special Offer</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="offerForm">
+                  <div class="modal-body">
+                    <input type="hidden" id="offerId">
+
+                    <div class="mb-3">
+                      <label class="form-label">Badge (e.g. "25% OFF")</label>
+                      <input type="text" class="form-control" id="offerBadge" maxlength="20">
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Title</label>
+                      <input type="text" class="form-control" id="offerTitle" required minlength="3">
+                      <div class="field-error" id="offerTitleError"></div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label d-flex justify-content-between">
+                        <span>Description</span>
+                        <span class="word-counter"><span id="offerDescCount">0</span> / 60 words</span>
+                      </label>
+                      <textarea class="form-control" id="offerDesc" rows="3"></textarea>
+                      <div class="field-error" id="offerDescError"></div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Image</label>
+                      <input type="file" class="form-control" id="offerImage" accept="image/png,image/jpeg,image/webp,image/gif">
+                      <div class="field-error" id="offerImageError"></div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <script>
+
+    async function uploadImageIfSelected(inputEl) {
+      if (!inputEl.files || !inputEl.files[0]) return null;
+      const formData = new FormData();
+      formData.append('image', inputEl.files[0]);
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Image upload failed.');
+      }
+      const data = await res.json();
+      return data.path;
+    }
+
+    function showError(el, message) {
+      el.textContent = message;
+      el.style.display = message ? 'block' : 'none';
+    }
+
+            let _offerModal;
+            function getOfferModal() {
+              if (!_offerModal) _offerModal = new bootstrap.Modal(document.getElementById('offerModal'));
+              return _offerModal;
+            }
+
+            document.getElementById('offerDesc').addEventListener('input', (e) => {
+              const words = e.target.value.trim().split(/\s+/).filter(Boolean);
+              document.getElementById('offerDescCount').textContent = words.length;
+            });
+
+            function openOfferModal(offer) {
+              document.getElementById('offerForm').reset();
+              document.getElementById('offerDescCount').textContent = '0';
+              ['offerTitleError','offerDescError','offerImageError'].forEach(id => showError(document.getElementById(id), ''));
+
+              if (offer) {
+                document.getElementById('offerModalTitle').textContent = 'Edit Special Offer';
+                document.getElementById('offerId').value = offer.id;
+                document.getElementById('offerBadge').value = offer.badge || '';
+                document.getElementById('offerTitle').value = offer.title;
+                document.getElementById('offerDesc').value = offer.description || '';
+                const words = (offer.description || '').trim().split(/\s+/).filter(Boolean);
+                document.getElementById('offerDescCount').textContent = words.length;
+              } else {
+                document.getElementById('offerModalTitle').textContent = 'Add Special Offer';
+                document.getElementById('offerId').value = '';
+              }
+              getOfferModal().show();
+            }
+
+            async function loadOffers() {
+              const res = await fetch('/api/offers');
+              const items = await res.json();
+              window.__offers = items;
+              const tbody = document.getElementById('offerBody');
+              tbody.innerHTML = '';
+              if (items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No special offers yet</td></tr>';
+                return;
+              }
+              items.forEach(o => {
+                const img = o.image ? `<img src="/${o.image}" class="thumb-img">` : '<span class="text-muted">No image</span>';
+                const badge = o.badge ? `<span class="badge text-bg-danger">${o.badge}</span>` : '';
+                tbody.innerHTML += `<tr>
+                  <td>${img}</td>
+                  <td>${badge}</td>
+                  <td>${o.title}</td>
+                  <td>${o.description || ''}</td>
+                  <td>
+                    <button class="btn btn-outline-primary btn-sm icon-btn" onclick="editOffer(${o.id})"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-outline-danger btn-sm icon-btn" onclick="deleteOffer(${o.id})"><i class="bi bi-trash"></i></button>
+                  </td>
+                </tr>`;
+              });
+            }
+
+            function editOffer(id) {
+              const offer = window.__offers.find(o => o.id === id);
+              if (offer) openOfferModal(offer);
+            }
+
+            async function deleteOffer(id) {
+              if (!confirm('Delete this offer?')) return;
+              await fetch(`/api/offers/${id}`, { method: 'DELETE' });
+              loadOffers();
+            }
+
+            document.getElementById('offerForm').addEventListener('submit', async (e) => {
+              e.preventDefault();
+
+              ['offerTitleError','offerDescError','offerImageError'].forEach(id => showError(document.getElementById(id), ''));
+
+              const titleRaw = document.getElementById('offerTitle').value;
+              const title = titleRaw.trim();
+              const description = document.getElementById('offerDesc').value.trim();
+              const badgeRaw = document.getElementById('offerBadge').value;
+              const badge = badgeRaw.trim();
+              const id = document.getElementById('offerId').value;
+              let hasError = false;
+
+              if (!titleRaw || !/^[^\s]+(?: [^\s]+)*$/.test(titleRaw) || title.length < 3) {
+                showError(document.getElementById('offerTitleError'), 'Title cannot be empty, must not have leading/trailing spaces, and allows only 1 single space between words.');
+                hasError = true;
+              }
+              if (badgeRaw && !/^[^\s]+(?: [^\s]+)*$/.test(badgeRaw)) {
+                showError(document.getElementById('offerTitleError'), 'Badge must not have leading/trailing spaces and allows only 1 single space between words.');
+                hasError = true;
+              }
+              if (description.split(/\s+/).filter(Boolean).length > 60) {
+                showError(document.getElementById('offerDescError'), 'Description must be 60 words or fewer.');
+                hasError = true;
+              }
+              if (hasError) return;
+
+              try {
+                const imagePath = await uploadImageIfSelected(document.getElementById('offerImage'));
+                const payload = { title, description, badge, image: imagePath };
+
+                const res = id
+                  ? await fetch(`/api/offers/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+                  : await fetch('/api/offers', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+
+                const result = await res.json();
+                if (!res.ok) { showError(document.getElementById('offerTitleError'), result.error || 'Something went wrong.'); return; }
+
+                getOfferModal().hide();
+                loadOffers();
+              } catch (err) {
+                showError(document.getElementById('offerImageError'), err.message);
+              }
+            });
+
+            loadOffers();
+            if (new URLSearchParams(window.location.search).get('action') === 'add') {
+              openOfferModal();
+            }
+          </script>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/admin-lte@4/dist/js/adminlte.min.js"></script>
+  <script>
+    async function doLogout(e) {
+      e.preventDefault();
+      await fetch('/api/logout', { method: 'POST' });
+      window.location.href = '../login.html';
+    }
+  </script>
+</body>
+</html>

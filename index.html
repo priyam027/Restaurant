@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bella Fiamma | Fine Dining Restaurant</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+  <!-- Custom CSS (loaded last so it can override Bootstrap) -->
+  <link rel="stylesheet" href="styles.css">
+
+  
+    
+
+  
+</head>
+<body>
+
+  <!-- ================= HEADER / NAVBAR ================= -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand" href="#home">Bella <span>Fiamma</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link " href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#menu">Menu</a></li>
+          <li class="nav-item"><a class="nav-link" href="#booktable">Book Table</a></li>
+          <li class="nav-item"><a class="nav-link" href="#offers">Offers</a></li>
+          <li class="nav-item"><a class="nav-link" href="#reviews">Reviews</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= HERO / HOME SECTION ================= -->
+  <section id="home" class="hero d-flex align-items-center">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 hero-text">
+          <span class="pretitle">Welcome to Bella Fiamma</span>
+          <h1>Taste The <span class="text-accent">Authentic</span> Italian Flavor</h1>
+          <p>Fresh ingredients, wood-fired ovens, and recipes passed down for generations. Every plate tells a story.</p>
+          <div class="hero-btns ">
+            <a href="#menu" class="btn btn-accent btn-lg me-3">View Menu</a>
+            <a href="#booktable" class="btn btn-outline-light btn-lg">Book a Table</a>
+          </div>
+        </div>
+        <div class="col-lg-6 text-center">
+          <img src="./image/hero-dish.png.png" alt="Signature Dish" class="img-fluid hero-img">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT SECTION ================= -->
+  <section id="about" class="section-padding">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <img src="./image/about.jpg.png" alt="Restaurant interior" class="img-fluid rounded about-img">
+        </div>
+        <div class="col-lg-6">
+          <span class="section-subtitle">Our Story</span>
+          <h2 class="section-title">A Passion Passed Down Through Generations</h2>
+          <p>Founded in 1998, Bella Fiamma began as a small family kitchen. Today, we continue to serve the same
+             recipes with the same love — using only the freshest local ingredients and traditional wood-fire
+             cooking techniques.</p>
+
+          <div class="row text-center stats mt-4">
+            <div class="col-4">
+              <h3 class="counter">25+</h3>
+              <p>Years Experience</p>
+            </div>
+            <div class="col-4">
+              <h3 class="counter">120+</h3>
+              <p>Menu Items</p>
+            </div>
+            <div class="col-4">
+              <h3 class="counter">5,400+</h3>
+              <p>Happy Customers</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CATEGORIES / MENU SECTION ================= -->
+  <section id="menu" class="section-padding bg-dark-alt">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="section-subtitle">What We Serve</span>
+        <h2 class="section-title">Our Food Categories</h2>
+      </div>
+
+      <div class="row g-4" id="websiteCategoriesContainer">
+        <!-- Dynamic food categories will load here from database -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BOOK A TABLE SECTION ================= -->
+  <section id="booktable" class="section-padding">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="section-subtitle">Reservation</span>
+        <h2 class="section-title">Book Your Table</h2>
+      </div>
+
+      <!-- HTML5-only validation: "pattern" enforces format rules, "required" blocks
+           empty submits, "min"/"max" bound the guest count — all handled natively
+           by the browser. Swap the mailto address for your real one, or point
+           action= at a backend/form service (e.g. Formspree) later. -->
+      <form class="row g-3 booking-form" id="bookingForm">
+        <div class="col-md-6">
+          <label class="form-label" for="bName">Name</label>
+
+          <input type="text" class="form-control" id="bName" name="Name"
+                 pattern="[A-Za-z\s]{2,}" title="Letters and spaces only, minimum 2 characters" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="bEmail">Email</label>
+          <input type="email" class="form-control" id="bEmail" name="Email" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="bMobile">Mobile Number</label>
+          <input type="tel" class="form-control" id="bMobile" name="Mobile" placeholder="10-digit number"
+                 pattern="[0-9]{10}" title="Enter exactly 10 digits" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="bGuests">Number of Guests</label>
+          <input type="number" class="form-control" id="bGuests" name="Guests" min="1" max="20" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="bDate">Date</label>
+          <input type="date" class="form-control" id="bDate" name="Date" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="bTime">Time</label>
+          <input type="time" class="form-control" id="bTime" name="Time" required>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label" for="bMessage">Message (optional)</label>
+          <textarea class="form-control" id="bMessage" name="Message" rows="3"></textarea>
+        </div>
+
+        <div class="col-12">
+          <p id="bookingError" style="color:#ff4d4d; display:none; margin-bottom:0;"></p>
+        </div>
+        <div class="col-12 text-center">
+          <button type="submit" class="btn btn-accent btn-lg px-5">Reserve Now</button>
+        </div>
+        <script>
+        // No past dates allowed in the date picker
+        document.getElementById('bDate').min = new Date().toISOString().split('T')[0];
+
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const errorEl = document.getElementById('bookingError');
+          errorEl.style.display = 'none';
+
+          const name = document.getElementById('bName').value.trim();
+          const email = document.getElementById('bEmail').value.trim();
+          const phone = document.getElementById('bMobile').value.trim();
+          const date = document.getElementById('bDate').value;
+          const time = document.getElementById('bTime').value;
+          const guests = Number(document.getElementById('bGuests').value);
+          const message = document.getElementById('bMessage').value.trim();
+
+          // Client-side checks (fast feedback before we even contact the server)
+          if (name.length < 2 || !/^[A-Za-z\s]+$/.test(name)) {
+            errorEl.textContent = 'Please enter a valid name (letters and spaces only).';
+            errorEl.style.display = 'block';
+            return;
+          }
+          if (!/^[0-9]{10}$/.test(phone)) {
+            errorEl.textContent = 'Mobile number must be exactly 10 digits.';
+            errorEl.style.display = 'block';
+            return;
+          }
+          if (guests < 1 || guests > 20) {
+            errorEl.textContent = 'Number of guests must be between 1 and 20.';
+            errorEl.style.display = 'block';
+            return;
+          }
+          const today = new Date().toISOString().split('T')[0];
+          if (date < today) {
+            errorEl.textContent = 'Please choose today or a future date.';
+            errorEl.style.display = 'block';
+            return;
+          }
+
+          const res = await fetch('/api/bookings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ customer_name: name, email, phone, date, time, guests, message })
+          });
+          const result = await res.json().catch(() => ({}));
+
+          if (res.ok) {
+            alert('Table reserved! We will contact you shortly.');
+            document.getElementById('bookingForm').reset();
+            document.getElementById('bDate').min = new Date().toISOString().split('T')[0];
+          } else {
+            errorEl.textContent = result.error || 'Something went wrong, please try again.';
+            errorEl.style.display = 'block';
+          }
+        });
+      </script>
+      </form>
+    </div>
+  </section>
+
+  <!-- ================= OFFERS SECTION ================= -->
+  <section id="offers" class="section-padding bg-dark-alt">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="section-subtitle">Don't Miss Out</span>
+        <h2 class="section-title">Special Offers</h2>
+      </div>
+
+      <div class="row g-4" id="websiteOffersContainer">
+        <!-- Dynamic special offers will load here from database -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TESTIMONIALS / REVIEWS SECTION ================= -->
+  <section id="reviews" class="section-padding">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="section-subtitle">Testimonials</span>
+        <h2 class="section-title">What Our Customers Say</h2>
+      </div>
+
+      <div class="row g-4" id="websiteReviewsContainer">
+        <!-- Dynamic customer reviews will load here from database -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= CONTACT SECTION ================= -->
+  <section id="contact" class="section-padding">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="section-subtitle">Get In Touch</span>
+        <h2 class="section-title">Contact Us</h2>
+      </div>
+
+      <div class="row g-5">
+        <div class="col-lg-5">
+          <ul class="contact-info list-unstyled">
+            <li><i class="fa-solid fa-location-dot"></i> 123 Main Street, City, State 12345</li>
+            <li><i class="fa-solid fa-phone"></i> +1 (234) 567-890</li>
+            <li><i class="fa-solid fa-envelope"></i> Bella Fiamma@123.com</li>
+          </ul>
+        </div>
+
+        <div class="col-lg-7">
+          <form class="row g-3" id="contactForm">
+            <div class="col-md-6">
+              <input type="text" class="form-control" id="cName" placeholder="Your Name" required minlength="2">
+            </div>
+            <div class="col-md-6">
+              <input type="email" class="form-control" id="cEmail" placeholder="Your Email" required>
+            </div>
+            <div class="col-12">
+              <input type="text" class="form-control" id="cSubject" placeholder="Subject" required>
+            </div>
+            <div class="col-12">
+              <textarea class="form-control" id="cMessage" rows="4" placeholder="Your Message" required minlength="5"></textarea>
+            </div>
+            <div class="col-12">
+              <p id="contactError" style="color:#ff4d4d; display:none; margin-bottom:10px;"></p>
+              <button type="submit" class="btn btn-accent btn-lg">Send Message</button>
+            </div>
+          </form>
+
+          <script>
+            document.getElementById('contactForm').addEventListener('submit', async (e) => {
+              e.preventDefault();
+              const errorEl = document.getElementById('contactError');
+              errorEl.style.display = 'none';
+
+              // trim() removes leading/trailing spaces, replace collapses double spaces typed in the middle
+              const name = document.getElementById('cName').value.trim().replace(/\s+/g, ' ');
+              const email = document.getElementById('cEmail').value.trim();
+              const subject = document.getElementById('cSubject').value.trim().replace(/\s+/g, ' ');
+              const message = document.getElementById('cMessage').value.trim().replace(/\s+/g, ' ');
+
+              if (name.length < 2) {
+                errorEl.textContent = 'Please enter your name.';
+                errorEl.style.display = 'block';
+                return;
+              }
+              if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                errorEl.textContent = 'Please enter a valid email address.';
+                errorEl.style.display = 'block';
+                return;
+              }
+              if (message.length < 5) {
+                errorEl.textContent = 'Message must be at least 5 characters.';
+                errorEl.style.display = 'block';
+                return;
+              }
+
+              const res = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, subject, message })
+              });
+              const result = await res.json().catch(() => ({}));
+
+              if (res.ok) {
+                alert('Message sent! We will get back to you soon.');
+                document.getElementById('contactForm').reset();
+              } else {
+                errorEl.textContent = result.error || 'Something went wrong, please try again.';
+                errorEl.style.display = 'block';
+              }
+            });
+          </script>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <h3 class="footer-logo">Bella <span>Fiamma</span></h3>
+          <p>Authentic Italian dining, crafted with fire and passion since 1998.</p>
+          <div class="social-icons">
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/veddesai_1?igsh=MXRoZzJpc240N3Vycw== `"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <h5>Quick Links</h5>
+          <ul class="footer-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#booktable">Book Table</a></li>
+            <li><a href="#reviews">reviews</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-4">
+          <h5>Opening Hours</h5>
+          <ul class="footer-hours">
+            <li>Mon - Fri <span>10:00 AM - 11:00 PM</span></li>
+            <li>Saturday <span>10:00 AM - 12:00 AM</span></li>
+            <li>Sunday <span>11:00 AM - 10:00 PM</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <hr>
+      <p class="text-center copyright">&copy; 2026 Bella Fiamma. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <!-- Pure CSS/HTML back-to-top: relies on "scroll-behavior: smooth" in styles.css
+       and simply links to the #home anchor. Always visible since there's no JS
+       to show/hide it based on scroll position. -->
+  <a href="#home" id="backToTop" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></a>
+
+  <!-- Bootstrap JS bundle — required ONLY so the mobile hamburger menu can open/close.
+       This is Bootstrap's own library file, not custom JS. -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+  <script>
+    async function loadWebsiteCategories() {
+      const container = document.getElementById('websiteCategoriesContainer');
+      if (!container) return;
+      try {
+        const res = await fetch('/api/categories');
+        const items = await res.json();
+        if (!items || items.length === 0) {
+          container.innerHTML = '<div class="col-12 text-center text-muted"><p>No food categories available.</p></div>';
+          return;
+        }
+        container.innerHTML = items.map(c => {
+          const imgSrc = c.image ? (c.image.startsWith('http') || c.image.startsWith('/') ? c.image : '/' + c.image) : './image/hero-dish.png.png';
+          const priceText = c.price ? `$${Number(c.price).toFixed(2)}` : '';
+          return `
+            <div class="col-md-6 col-lg-4">
+              <div class="menu-card">
+                <div class="menu-img"><img src="${imgSrc}" alt="${c.name}"></div>
+                <div class="menu-body">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h4 class="mb-0">${c.name}</h4>
+                    ${priceText ? `<span class="price">${priceText}</span>` : ''}
+                  </div>
+                  <p>${c.description || ''}</p>
+                  <a href="#booktable" class="btn btn-sm btn-accent">Order Now</a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        console.error('Failed to load categories:', e);
+      }
+    }
+
+    async function loadWebsiteOffers() {
+      const container = document.getElementById('websiteOffersContainer');
+      if (!container) return;
+      try {
+        const res = await fetch('/api/offers');
+        const items = await res.json();
+        if (!items || items.length === 0) {
+          container.innerHTML = '<div class="col-12 text-center text-muted"><p>No special offers at this time.</p></div>';
+          return;
+        }
+        container.innerHTML = items.map(o => {
+          const imgSrc = o.image ? (o.image.startsWith('http') || o.image.startsWith('/') ? o.image : '/' + o.image) : './image/hero-dish.png.png';
+          const badgeHtml = o.badge ? `<span class="badge-discount">${o.badge}</span>` : '';
+          return `
+            <div class="col-md-4">
+              <div class="offer-card">
+                ${badgeHtml}
+                <img src="${imgSrc}" alt="${o.title}">
+                <div class="offer-body">
+                  <h4>${o.title}</h4>
+                  <p>${o.description || ''}</p>
+                  <a href="#booktable" class="btn btn-outline-accent btn-sm">Claim Offer</a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        console.error('Failed to load offers:', e);
+      }
+    }
+
+    function renderStars(rating) {
+      const full = Math.min(5, Math.max(1, Number(rating) || 5));
+      let stars = '';
+      for (let i = 0; i < 5; i++) {
+        if (i < full) {
+          stars += '<i class="fa-solid fa-star me-1"></i>';
+        } else {
+          stars += '<i class="fa-regular fa-star me-1"></i>';
+        }
+      }
+      return stars;
+    }
+
+    async function loadWebsiteReviews() {
+      const container = document.getElementById('websiteReviewsContainer');
+      if (!container) return;
+      try {
+        const res = await fetch('/api/reviews');
+        const items = await res.json();
+        if (!items || items.length === 0) {
+          container.innerHTML = '<div class="col-12 text-center text-muted"><p>No customer reviews yet.</p></div>';
+          return;
+        }
+        container.innerHTML = items.map(r => {
+          const imgSrc = r.image ? (r.image.startsWith('http') || r.image.startsWith('/') ? r.image : '/' + r.image) : './image/hero-dish.png.png';
+          const roleText = r.role ? `<span>${r.role}</span>` : '<span>Customer</span>';
+          return `
+            <div class="col-md-4">
+              <div class="review-card">
+                <i class="fa-solid fa-quote-left review-quote-icon"></i>
+                <div class="review-stars mb-2" style="color: #ffc107;">
+                  ${renderStars(r.rating)}
+                </div>
+                <p class="review-text">${r.comment || ''}</p>
+                <div class="review-author">
+                  <img src="${imgSrc}" alt="${r.customer_name}">
+                  <div>
+                    <h5>${r.customer_name}</h5>
+                    ${roleText}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        console.error('Failed to load reviews:', e);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadWebsiteCategories();
+      loadWebsiteOffers();
+      loadWebsiteReviews();
+    });
+  </script>
+
+</body>
+</html>   

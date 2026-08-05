@@ -1,0 +1,480 @@
+/* =========================================================
+   ROOT VARIABLES — change these to re-theme the whole site
+   ========================================================= */
+:root {
+  --dark-bg: #121212;
+  --dark-bg-alt: #1a1a1a;
+  --accent: #ff7b00;
+  --accent-hover: #ff9433;
+  --text-light: #f5f5f5;
+  --text-muted: #b3b3b3;
+  --font-heading: 'Lobster Two', cursive;
+  --font-body: 'Roboto', sans-serif;
+}
+
+/* =========================================================
+   BASE STYLES
+   ========================================================= */
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--dark-bg);
+  color: var(--text-light);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .navbar-brand, .footer-logo {
+  font-family: var(--font-heading);
+}
+
+.text-accent { color: var(--accent); }
+
+.section-padding { padding: 90px 0; }
+.bg-dark-alt { background-color: var(--dark-bg-alt); }
+
+.section-subtitle {
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.section-title {
+  font-size: 2.4rem;
+  margin-bottom: 1rem;
+}
+
+/* Buttons */
+.btn-accent {
+  background-color: var(--accent);
+  color: #fff;
+  border: none;
+  transition: all 0.3s ease;
+}
+.btn-accent:hover {
+  background-color: var(--accent-hover);
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255, 123, 0, 0.4);
+}
+
+.btn-outline-accent {
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  background: transparent;
+  transition: all 0.3s ease;
+}
+.btn-outline-accent:hover {
+  background-color: var(--accent);
+  color: #fff;
+}
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+#mainNav {
+    background: black;
+    transition: 0.3s;
+}
+
+/* Added via JS when user scrolls down */
+#mainNav.scrolled {
+  background-color: rgba(18, 18, 18, 0.95);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  padding: 8px 0;
+}
+
+.navbar-brand {
+  font-size: 1.8rem;
+  color: var(--text-light) !important;
+}
+.navbar-brand span { color: var(--accent); }
+
+.navbar-nav .nav-link {
+  color: var(--text-light) !important;
+  margin: 0 10px;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.active::after {
+  width: 100%;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: var(--accent) !important;
+}
+
+/* =========================================================
+   HERO SECTION
+   ========================================================= */
+.hero {
+  min-height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://placehold.co/1920x1080/1a1a1a/2a2a2a?text=Restaurant+Ambience') center/cover no-repeat;
+  padding-top: 80px;
+}
+
+.hero .pretitle {
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+.hero h1 {
+  font-size: 3.2rem;
+  margin: 15px 0;
+  animation: fadeInUp 1s ease both;
+}
+
+.hero p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  max-width: 500px;
+  animation: fadeInUp 1s ease 0.2s both;
+}
+
+.hero-btns { animation: fadeInUp 1s ease 0.4s both; }
+
+.hero-img {
+  animation: floatImg 4s ease-in-out infinite, fadeIn 1.2s ease both;
+  max-height: 480px;
+}
+
+/* =========================================================
+   ABOUT SECTION
+   ========================================================= */
+.about-img {
+  transition: transform 0.5s ease;
+}
+.about-img:hover { transform: scale(1.03); }
+
+.stats h3 {
+  font-size: 2.2rem;
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-weight: 700;
+}
+.stats p { color: var(--text-muted); font-size: 0.9rem; }
+
+/* =========================================================
+   MENU / CATEGORY CARDS
+   ========================================================= */
+.menu-card {
+  background-color: #1e1e1e;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  height: 100%;
+}
+
+.menu-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+}
+
+.menu-img { overflow: hidden; height: 220px; }
+
+.menu-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.menu-card:hover .menu-img img { transform: scale(1.12); }
+
+.menu-body { padding: 20px; }
+.menu-body h4 { margin: 0; }
+.menu-body .price { color: var(--accent); font-weight: 700; }
+.menu-body p { color: var(--text-muted); font-size: 0.9rem; margin: 10px 0; }
+
+/* =========================================================
+   BOOKING FORM
+   ========================================================= */
+.booking-form {
+  background-color: var(--dark-bg-alt);
+  padding: 40px;
+  border-radius: 16px;
+}
+
+.booking-form .form-control {
+  background-color: #222;
+  border: 1px solid #333;
+  color: var(--text-light);
+}
+.booking-form .form-control:focus {
+  background-color: #222;
+  color: var(--text-light);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 0.2rem rgba(255,123,0,0.25);
+}
+
+/* =========================================================
+   OFFERS SECTION
+   ========================================================= */
+.offer-card {
+  position: relative;
+  background-color: #1e1e1e;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.35s ease;
+}
+.offer-card:hover { transform: translateY(-8px); }
+
+.offer-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.offer-card:hover img { transform: scale(1.1); }
+
+.badge-discount {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: var(--accent);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  z-index: 2;
+}
+
+.offer-body { padding: 20px; }
+.offer-body p { color: var(--text-muted); font-size: 0.9rem; }
+
+/* =========================================================
+   TESTIMONIALS / REVIEWS SECTION
+   ========================================================= */
+.review-card {
+  background-color: #1e1e1e;
+  border-radius: 14px;
+  padding: 30px;
+  height: 100%;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  position: relative;
+}
+
+.review-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+}
+
+.review-quote-icon {
+  color: var(--accent);
+  font-size: 1.6rem;
+  opacity: 0.5;
+  margin-bottom: 12px;
+}
+
+.review-stars {
+  color: var(--accent);
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+}
+
+.review-text {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.review-author img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+}
+
+.review-author h5 {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text-light);
+}
+
+.review-author span {
+  color: var(--accent);
+  font-size: 0.8rem;
+}
+
+/* =========================================================
+   CONTACT SECTION
+   ========================================================= */
+.contact-info li {
+  margin-bottom: 18px;
+  color: var(--text-muted);
+}
+.contact-info i {
+  color: var(--accent);
+  width: 28px;
+}
+
+.map-container {
+  border-radius: 12px;
+  overflow: hidden;
+}
+.map-container iframe {
+  width: 150%;
+  height: 300px;
+  border: 0;
+  display: block;
+}
+
+#contact .form-control {
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  color: var(--text-light);
+}
+#contact .form-control::placeholder {
+  color: var(--text-muted);
+  opacity: 1; /* Firefox dims placeholder text by default, this overrides that */
+}
+
+#contact .form-control:focus {
+  background-color: #1e1e1e;
+  color: var(--text-light);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 0.2rem rgba(255,123,0,0.25);
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.footer {
+  background-color: #0d0d0d;
+  padding: 60px 0 25px;
+}
+
+.footer-logo { font-size: 1.8rem; }
+.footer-logo span { color: var(--accent); }
+
+.footer p, .footer li { color: var(--text-muted); }
+
+.social-icons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background-color: #1e1e1e;
+  color: var(--text-light);
+  border-radius: 50%;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+}
+.social-icons a:hover {
+  background-color: var(--accent);
+  transform: translateY(-4px);
+}
+
+.footer-links { list-style: none; padding: 0; }
+.footer-links li { margin-bottom: 10px; }
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.footer-links a:hover { color: var(--accent); }
+
+.footer-hours { list-style: none; padding: 0; }
+.footer-hours li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #222;
+  padding-bottom: 8px;
+}
+.footer-hours span { color: var(--text-light); }
+
+.footer hr { border-color: #222; }
+.copyright { color: var(--text-muted); font-size: 0.85rem; margin-top: 15px; }
+
+/* =========================================================
+   BACK TO TOP BUTTON
+   ========================================================= */
+/* Always visible since there's no JS to show/hide it based on scroll position.
+   display:flex centers the icon; text-decoration:none removes the link underline. */
+#backToTop {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 999;
+  transition: transform 0.3s ease;
+}
+#backToTop:hover { transform: translateY(-4px); color: #fff; }
+
+/* =========================================================
+   KEYFRAME ANIMATIONS
+   ========================================================= */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(25px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes floatImg {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+/* =========================================================
+   RESPONSIVE TWEAKS
+   ========================================================= */
+@media (max-width: 991px) {
+  .navbar-collapse {
+    background-color: rgba(18,18,18,0.98);
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+  .hero h1 { font-size: 2.3rem; }
+}
+
+@media (max-width: 576px) {
+  .section-padding { padding: 60px 0; }
+  .hero { text-align: center; }
+  .hero-btns { display: flex; flex-direction: column; gap: 10px; }
+  .hero-btns .btn { margin: 0 !important; }
+}
